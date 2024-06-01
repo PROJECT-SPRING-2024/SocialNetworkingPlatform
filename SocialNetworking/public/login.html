@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialNetworking - Log in or Sign up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #main_con {
+            background-color: #fff;
+            width: 400px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .img_logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .img_logo img {
+            width: 150px;
+        }
+        .para_1 {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .input_user {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #dddfe2;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .log {
+            background-color: #1877f2;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1.1em;
+        }
+        .log:hover {
+            background-color: #165bd4;
+        }
+        .CA {
+            background-color: #42b72a;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1.1em;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .CA:hover {
+            background-color: #36a420;
+        }
+        p {
+            text-align: center;
+            margin-top: 10px;
+        }
+        hr {
+            margin: 20px 0;
+            border: none;
+            height: 1px;
+            background-color: #dddfe2;
+        }
+    </style>
+</head>
+<body>
+    <main id="main_con">
+        <section id="sec_con">
+            <div id="con_1">
+                <div class="img_logo">
+                    <img src="logo.png" alt="SocialNetworking Logo">
+                </div>
+                <div class="para_1">
+                    <p>SocialNetworking helps you connect and share.</p>
+                </div>       
+            </div>
+
+            <div id="con_2">
+                <div id="form1">
+                    <form id="loginForm" action="/login" method="post">
+                        <input type="email" name="email" required placeholder="Email or phone number" class="input_user">
+                        <input type="password" name="password" required placeholder="Password" class="input_user">
+                        <button type="submit" class="input_user log">Log In</button>
+                        <p><a href="#" style="color: #1877f2;">Forgot password?</a></p>
+                        <hr>
+                        <button type="button" class="CA" onclick="window.location.href='/signup'">Create new account</button>
+                    </form>
+                </div>
+                <div>
+                    <p><a href="#"><strong style="color: black;">Create a page</strong></a> for a celebrity, brand, or business</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                localStorage.setItem('token', result.token);
+                window.location.href = '/';
+            } else {
+                alert(result.error);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+create database social;
+
+next comand
+
+\c social
+
+next comand
+
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  profile_image VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+email: Unique identifier for each user.
+password: Encrypted password for user authentication.
+name: User's name.
+profile_image: Path to the user's profile image.
+created_at: Timestamp of when the user was created.
+
+
+CREATE TABLE posts (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  author INTEGER REFERENCES users(id),
+  image VARCHAR(255),
+  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+author: Foreign key referencing the user who created the post.
+image: Path to the post image.
+
+CREATE TABLE comments (
+  id SERIAL PRIMARY KEY,
+  text TEXT NOT NULL,
+  author INTEGER REFERENCES users(id),
+  post_id INTEGER REFERENCES posts(id),
+  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+author: Foreign key referencing the user who made the comment.
+post_id: Foreign key referencing the post being commented on.
+
+CREATE TABLE likes (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id),
+  post_id INTEGER REFERENCES posts(id),
+  UNIQUE (user_id, post_id)
+);
+user_id: Foreign key referencing the user who liked the post.
+post_id: Foreign key referencing the post that was liked.
+
+CREATE TABLE friends (
+  user_id INTEGER REFERENCES users(id),
+  friend_id INTEGER REFERENCES users(id),
+  status VARCHAR(50) NOT NULL, -- e.g., pending, accepted, blocked
+  requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, friend_id)
+);
+user_id: Foreign key referencing the user who sent the friend request.
+friend_id: Foreign key referencing the user who received the friend request.
+status: Status of the friend request (pending, accepted, blocked).
+
+CREATE TABLE messages (
+  id SERIAL PRIMARY KEY,
+  sender_id INTEGER REFERENCES users(id),
+  receiver_id INTEGER REFERENCES users(id),
+  message TEXT NOT NULL,
+  sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
