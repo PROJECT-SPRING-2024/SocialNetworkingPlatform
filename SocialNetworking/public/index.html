@@ -5,50 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Social Network</title>
 
-    <!-- Facebook Favicon -->
+    <!-- Favicon for the website -->
     <link rel="icon" href="/images/favicon.png" />
 
-    <!-- Fontawesome Icons  -->
+    <!-- Fontawesome Icons for using various icons throughout the page -->
     <script
       src="https://kit.fontawesome.com/7433d3320f.js"
       crossorigin="anonymous"
     ></script>
 
-    <!-- CSS File  -->
+    <!-- External CSS file for styling the webpage -->
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
-    <!-- Navigation Section  -->
+    <!-- Navigation Section -->
     <nav>
-      <!-- Left Section  -->
+      <!-- Left Section of the Navigation Bar -->
       <div class="nav-left">
+        <!-- Logo with a link to the homepage -->
         <a href="index.html"><img src="images/logo.png" class="logo" /></a>
+        <!-- Search box for searching content on the website -->
         <div class="search-box">
           <img src="images/search.png" />
           <input type="text" placeholder="Search" />
         </div>
-       
       </div>
-      <!-- Right Section  -->
+
+      <!-- Right Section of the Navigation Bar -->
       <div class="nav-right">
-        <!-- Searchbox  -->
-       
         <ul>
+          <!-- Notification icon -->
           <li><img src="images/notification.png" /></li>
-          
         </ul>
+        <!-- Profile icon which toggles the settings menu -->
         <div class="nav-user-icon online" onclick="settingsMenuToggle()">
           <img src="images/profile-pic.jpg" />
         </div>
       </div>
 
-      <!-- Settings Menu Section  -->
+      <!-- Settings Menu Section -->
       <div class="settings-menu">
-        <!-- Dark Button Toggle  -->
+        <!-- Dark Mode Toggle Button -->
         <div id="dark-btn">
           <span></span>
         </div>
         <div class="settings-menu-inner">
+          <!-- User Profile Section within Settings Menu -->
           <div class="user-profile">
             <img src="images/profile-pic.jpg" />
             <div>
@@ -57,6 +59,7 @@
             </div>
           </div>
           <hr />
+          <!-- Feedback Section -->
           <div class="user-profile">
             <img src="images/feedback.png" />
             <div>
@@ -65,37 +68,35 @@
             </div>
           </div>
           <hr />
-
+          <!-- Settings & Privacy Link -->
           <div class="settings-links">
             <img src="images/setting.png" class="settings-icon" />
-            <a href="#"
-              >Settings & Privacy <img src="images/arrow.png" width="10px"
-            /></a>
+            <a href="#">Settings & Privacy <img src="images/arrow.png" width="10px"/></a>
           </div>
+          <!-- Help & Support Link -->
           <div class="settings-links">
             <img src="images/help.png" class="settings-icon" />
-            <a href="#"
-              >Help & Support <img src="images/arrow.png" width="10px"
-            /></a>
+            <a href="#">Help & Support <img src="images/arrow.png" width="10px"/></a>
           </div>
+          <!-- Display & Accessibility Link -->
           <div class="settings-links">
             <img src="images/display.png" class="settings-icon" />
-            <a href="#"
-              >Display & Accessibility <img src="images/arrow.png" width="10px"
-            /></a>
+            <a href="#">Display & Accessibility <img src="images/arrow.png" width="10px"/></a>
           </div>
+          <!-- Logout Link -->
           <div class="settings-links">
             <img src="images/logout.png" class="settings-icon" />
-            <a href="#">Logout <img src="images/arrow.png" width="10px" /></a>
+            <a href="#">Logout <img src="images/arrow.png" width="10px"/></a>
           </div>
         </div>
       </div>
     </nav>
 
-    <!-- Main Content Section  -->
+    <!-- Main Content Section -->
     <div class="container">
-      <!-- Left Sidebar  -->
+      <!-- Left Sidebar -->
       <div class="left-sidebar">
+        <!-- Important Links Section -->
         <div class="imp-links">
           <a href="#"><img src="images/news.png" />Latest News</a>
           <a href="#"><img src="images/friends.png" />Friends</a>
@@ -104,23 +105,25 @@
           <a href="#"><img src="images/watch.png" />Watch</a>
           <a href="#">See More</a>
         </div>
+        <!-- Shortcuts Section -->
         <div class="shortcut-links">
           <p>Your Shortcuts</p>
           <a href="#"><img src="images/shortcut-1.png" />Frontend Developers</a>
-        
         </div>
       </div>
-      <!-- Middle Content  -->
-      <!-- Story Section  -->
+
+      <!-- Middle Content Section -->
       <div class="main-content">
+        <!-- Story Section -->
         <div class="story-gallery">
+          <!-- User's own story upload option -->
           <div class="story story1">
             <img src="images/upload.webp" />
             <p>Post Story</p>
           </div>
+          <!-- Stories of other users -->
           <div class="story story2">
-            <img
-              src="images/111.jpg"/>
+            <img src="images/111.jpg" />
             <p>Bill Gates</p>
           </div>
           <div class="story story3">
@@ -135,11 +138,11 @@
             <img src="images/111.jpg" />
             <p>Jeff Bezos</p>
           </div>
-        
         </div>
 
-        <!-- Post Section  -->
+        <!-- Post Creation Section -->
         <div class="write-post-container">
+          <!-- User Profile Info -->
           <div class="user-profile">
             <img src="images/profile-pic.jpg" />
             <div>
@@ -147,12 +150,9 @@
               <small>Public <i class="fa-solid fa-caret-down"></i></small>
             </div>
           </div>
-
+          <!-- Post Input Area -->
           <div class="post-input-container">
-            <textarea
-              rows="3"
-              placeholder="What's on your mind, Chapal?"
-            ></textarea>
+            <textarea rows="3" placeholder="What's on your mind, Chapal?"></textarea>
             <div class="add-post-links">
               <a href="#"><img src="images/live-video.png" /> Live Video</a>
               <a href="#"><img src="images/photo.png" /> Photo/Video</a>
@@ -161,8 +161,8 @@
           </div>
         </div>
 
-        <!-- Uploaded Posts Section  -->
-        <!-- Post 1  -->
+        <!-- Uploaded Posts Section -->
+        <!-- Example Post -->
         <div class="post-container">
           <div class="post-row">
             <div class="user-profile">
@@ -182,7 +182,6 @@
             <a href="#">#Offers</a>
           </p>
           <img src="images/feed-image-1.jpg" class="post-img" />
-
           <div class="post-row">
             <div class="activity-icons">
               <div><img src="images/like-blue.png" /> 75k+</div>
@@ -196,20 +195,18 @@
           </div>
         </div>
 
-        
-       
-
-        <!-- Load More  -->
+        <!-- Load More Button -->
         <button type="button" class="load-more-button">Load More</button>
       </div>
 
-      <!-- Right Sidebar  -->
+      <!-- Right Sidebar -->
       <div class="right-sidebar">
+        <!-- Events Section -->
         <div class="sidebar-title">
           <h4>Events</h4>
           <a href="#">See All</a>
         </div>
-
+        <!-- Example Event -->
         <div class="event">
           <div class="left-event">
             <h3>1</h3>
@@ -223,38 +220,35 @@
             <a href="#">More Info</a>
           </div>
         </div>
+        <!-- Another Example Event -->
         <div class="event">
           <div class="left-event">
             <h3>5</h3>
             <span>November</span>
           </div>
-          
         </div>
 
+        <!-- Conversation Section -->
         <div class="sidebar-title">
           <h4>Conversation</h4>
           <a href="#">Hide Chat</a>
         </div>
-
+        <!-- Example Online User -->
         <div class="online-list">
           <div class="online">
             <img src="images/member-1.jpg" />
           </div>
           <p>Bill Gates</p>
         </div>
-        
       </div>
     </div>
 
-    <!-- Footer Section  -->
+    <!-- Footer Section -->
     <div class="footer">
-      <p>
-        © 2024 Shaik-Chapal
-      </p>
+      <p>© 2024 Shaik-Chapal</p>
     </div>
 
-    <!-- JavaScript File  -->
+    <!-- JavaScript File for interactive features -->
     <script src="js/scripts.js"></script>
   </body>
 </html>
-

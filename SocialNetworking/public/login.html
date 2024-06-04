@@ -2,106 +2,136 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- Ensures compatibility with Internet Explorer -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Ensures proper scaling on mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SocialNetworking - Log in or Sign up</title>
     <style>
+        /* Basic styling for the body to center the content and set background color */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
+            background-color: #f0f2f5; /* Light grey background color */
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            height: 100vh; /* Full viewport height */
+            margin: 0; /* Remove default margin */
         }
+        /* Styling for the main container that holds the login form */
         #main_con {
-            background-color: #fff;
-            width: 400px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff; /* White background color */
+            width: 400px; /* Fixed width for the container */
+            padding: 20px; /* Padding inside the container */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
         }
+        /* Center the logo and add spacing below it */
         .img_logo {
-            text-align: center;
-            margin-bottom: 20px;
+            text-align: center; /* Center align the logo */
+            margin-bottom: 20px; /* Space below the logo */
         }
+        /* Set the size of the logo image */
         .img_logo img {
-            width: 150px;
+            width: 150px; /* Width of the logo */
         }
+        /* Styling for the introductory paragraph */
         .para_1 {
-            text-align: center;
-            font-size: 1.2em;
-            margin-bottom: 20px;
+            text-align: center; /* Center align the text */
+            font-size: 1.2em; /* Slightly larger font size */
+            margin-bottom: 20px; /* Space below the paragraph */
         }
+        /* Styling for input fields */
         .input_user {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #47a553;
-            border-radius: 5px;
-            font-size: 1em;
+            width: 100%; /* Full width */
+            padding: 10px; /* Padding inside input fields */
+            margin: 10px 0; /* Margin above and below input fields */
+            border: 1px solid #47a553; /* Green border */
+            border-radius: 5px; /* Rounded corners */
+            font-size: 1em; /* Standard font size */
         }
+        /* Styling for the login button */
         .log {
-            background-color: #31997aa6;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 1.1em;
+            background-color: #31997aa6; /* Green background color */
+            color: #fff; /* White text */
+            border: none; /* Remove border */
+            cursor: pointer; /* Pointer cursor on hover */
+            border-radius: 5px; /* Rounded corners */
+            font-size: 1.1em; /* Slightly larger font size */
         }
+        /* Change background color on hover */
         .log:hover {
-            background-color: #165bd4;
+            background-color: #165bd4; /* Darker blue background on hover */
         }
+        /* Styling for the create account button */
         .CA {
-            background-color: #42b72a;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 1.1em;
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
+            background-color: #42b72a; /* Green background color */
+            color: #fff; /* White text */
+            border: none; /* Remove border */
+            cursor: pointer; /* Pointer cursor on hover */
+            border-radius: 5px; /* Rounded corners */
+            font-size: 1.1em; /* Slightly larger font size */
+            width: 100%; /* Full width */
+            padding: 10px; /* Padding inside the button */
+            margin-top: 10px; /* Space above the button */
         }
+        /* Change background color on hover */
         .CA:hover {
-            background-color: #36a420;
+            background-color: #36a420; /* Darker green background on hover */
         }
+        /* Styling for text paragraphs */
         p {
-            text-align: center;
-            margin-top: 10px;
+            text-align: center; /* Center align text */
+            margin-top: 10px; /* Space above the text */
         }
+        /* Styling for horizontal rule */
         hr {
-            margin: 20px 0;
-            border: none;
-            height: 1px;
-            background-color: #dddfe2;
+            margin: 20px 0; /* Space above and below the rule */
+            border: none; /* Remove border */
+            height: 1px; /* Set height */
+            background-color: #dddfe2; /* Light grey color */
         }
     </style>
 </head>
 <body>
+    <!-- Main container for the login section -->
     <main id="main_con">
+        <!-- Section container -->
         <section id="sec_con">
+            <!-- Container for the logo and introductory paragraph -->
             <div id="con_1">
+                <!-- Logo container -->
                 <div class="img_logo">
+                    <!-- Logo image -->
                     <img src="images/logo.png" alt="SocialNetworking Logo">
                 </div>
+                <!-- Introductory paragraph -->
                 <div class="para_1">
                     <p>Login</p>
                 </div>       
             </div>
 
+            <!-- Container for the form and additional links -->
             <div id="con_2">
+                <!-- Form container -->
                 <div id="form1">
+                    <!-- Login form -->
                     <form id="loginForm" action="/login" method="post">
+                        <!-- Email input field -->
                         <input type="email" name="email" required placeholder="Email or phone number" class="input_user">
+                        <!-- Password input field -->
                         <input type="password" name="password" required placeholder="Password" class="input_user">
+                        <!-- Login button -->
                         <button type="submit" class="input_user log">Log In</button>
+                        <!-- Forgot password link -->
                         <p><a href="#" style="color: #1877f2;">Forgot password?</a></p>
+                        <!-- Horizontal rule for separation -->
                         <hr>
+                        <!-- Create new account button -->
                         <button type="button" class="CA" onclick="window.location.href='/signup'">Create new account</button>
                     </form>
                 </div>
+                <!-- Link to create a new page -->
                 <div>
                     <p><a href="#"><strong style="color: black;">Create a page</strong></a> </p>
                 </div>
@@ -109,26 +139,29 @@
         </section>
     </main>
     <script>
+        // Add event listener to handle form submission
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
+            event.preventDefault();  // Prevent default form submission behavior
+            const form = event.target; // Get the form element
+            const formData = new FormData(form); // Create a FormData object
+            const data = Object.fromEntries(formData.entries()); // Convert FormData to a plain object
 
+            // Send form data to the server using Fetch API
             const response = await fetch(form.action, {
-                method: 'POST',
+                method: 'POST', // Set request method to POST
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json' // Set the Content-Type header
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(data) // Convert data object to JSON string
             });
 
-            const result = await response.json();
+            // Handle server response
+            const result = await response.json(); // Parse the JSON response
             if (response.ok) {
-                localStorage.setItem('token', result.token);
-                window.location.href = '/';
+                localStorage.setItem('token', result.token); // Store the token in local storage
+                window.location.href = '/'; // Redirect to home page
             } else {
-                alert(result.error);
+                alert(result.error); // Show error message
             }
         });
     </script>

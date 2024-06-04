@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SocialNetworking - Log in or Sign up</title>
     <style>
+        /* Basic styling for the body to center content and set background color */
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f2f5;
@@ -15,6 +16,8 @@
             height: 100vh;
             margin: 0;
         }
+
+        /* Styling for the main container */
         #main_con {
             background-color: #fff;
             width: 400px;
@@ -22,18 +25,25 @@
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+
+        /* Styling for the logo section */
         .img_logo {
             text-align: center;
             margin-bottom: 20px;
         }
+
         .img_logo img {
             width: 150px;
         }
+
+        /* Styling for the introductory paragraph */
         .para_1 {
             text-align: center;
             font-size: 1.2em;
             margin-bottom: 20px;
         }
+
+        /* Styling for input fields */
         .input_user {
             width: 100%;
             padding: 10px;
@@ -42,6 +52,8 @@
             border-radius: 5px;
             font-size: 1em;
         }
+
+        /* Styling for the login button */
         .log {
             background-color: #31997aa6;
             color: #fff;
@@ -50,9 +62,12 @@
             border-radius: 5px;
             font-size: 1.1em;
         }
+
         .log:hover {
             background-color: #165bd4;
         }
+
+        /* Styling for the create account button */
         .CA {
             background-color: #42b72a;
             color: #fff;
@@ -64,13 +79,18 @@
             padding: 10px;
             margin-top: 10px;
         }
+
         .CA:hover {
             background-color: #36a420;
         }
+
+        /* Styling for paragraphs */
         p {
             text-align: center;
             margin-top: 10px;
         }
+
+        /* Styling for horizontal rule */
         hr {
             margin: 20px 0;
             border: none;
@@ -80,8 +100,11 @@
     </style>
 </head>
 <body>
+    <!-- Main container -->
     <main id="main_con">
+        <!-- Section container -->
         <section id="sec_con">
+            <!-- Container for the logo and introductory paragraph -->
             <div id="con_1">
                 <div class="img_logo">
                     <img src="images/logo.png" alt="SocialNetworking Logo">
@@ -91,17 +114,26 @@
                 </div>       
             </div>
 
+            <!-- Container for the form and additional links -->
             <div id="con_2">
+                <!-- Form container -->
                 <div id="form1">
                     <form id="loginForm" action="/login" method="post">
+                        <!-- Email input field -->
                         <input type="email" name="email" required placeholder="Email or phone number" class="input_user">
+                        <!-- Password input field -->
                         <input type="password" name="password" required placeholder="Password" class="input_user">
+                        <!-- Login button -->
                         <button type="submit" class="input_user log">Log In</button>
+                        <!-- Forgot password link -->
                         <p><a href="#" style="color: #1877f2;">Forgot password?</a></p>
+                        <!-- Horizontal rule -->
                         <hr>
+                        <!-- Create new account button -->
                         <button type="button" class="CA" onclick="window.location.href='/signup'">Create new account</button>
                     </form>
                 </div>
+                <!-- Create a page link -->
                 <div>
                     <p><a href="#"><strong style="color: black;">Create a page</strong></a> </p>
                 </div>
@@ -109,12 +141,14 @@
         </section>
     </main>
     <script>
+        // Add event listener to handle form submission
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
+            event.preventDefault();  // Prevent default form submission behavior
             const form = event.target;
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
+            // Send form data to the server using Fetch API
             const response = await fetch(form.action, {
                 method: 'POST',
                 headers: {
@@ -123,12 +157,13 @@
                 body: JSON.stringify(data)
             });
 
+            // Handle server response
             const result = await response.json();
             if (response.ok) {
-                localStorage.setItem('token', result.token);
-                window.location.href = '/';
+                localStorage.setItem('token', result.token);  // Store the token in local storage
+                window.location.href = '/';  // Redirect to home page
             } else {
-                alert(result.error);
+                alert(result.error);  // Show error message
             }
         });
     </script>
