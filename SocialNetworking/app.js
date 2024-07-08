@@ -79,50 +79,9 @@ app.post('/signup', async (req, res) => {
 });
 
 // Route to handle user login
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-    const user = result.rows[0];
-
-    if (!user) {
-      return res.status(400).json({ error: 'User not found' });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({ error: 'Invalid credentials' });
-    }
-
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    res.json({ message: 'Logged in successfully', token });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error logging in' });
-  }
-});
-
-// Middleware to authenticate user using JWT
-const authenticateToken = (req, res, next) => {
-  const token = req.header('Authorization').replace('Bearer ', '');
-
-  if (!token) {
-    return res.status(401).json({ error: 'Access denied' });
-  }
-
-  try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = verified;
-    next();
-  } catch (err) {
-    res.status(400).json({ error: 'Invalid token' });
-  }
-};
-
-// Add other routes here...
+// Import and use auth routes
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);
 
 // Start the server and listen on the defined port
 app.listen(PORT, () => {
