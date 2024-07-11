@@ -57,31 +57,15 @@ app.get('/signup', (req, res) => {
 app.get('/home', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'home.html'));
 });
-
-
-// Route to handle user registration
-app.post('/signup', async (req, res) => {
-  const { email, password, name } = req.body;
-
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await pool.query(
-      'INSERT INTO users (email, password, name) VALUES ($1, $2, $3) RETURNING *',
-      [email, hashedPassword, name]
-    );
-
-    const newUser = result.rows[0];
-    res.status(201).json({ message: 'User created', user: newUser });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error creating user' });
-  }
+app.get('/forgot-pass', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'forgot.html'));
 });
+
+
+
 
 // Route to handle user login
 // Import and use auth routes
-const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);
 
 // Start the server and listen on the defined port
 app.listen(PORT, () => {
