@@ -66,6 +66,9 @@ app.get('/forgot-pass', (req, res) => {
 
 // Route to handle user login
 // Import and use auth routes
+// Import and use auth routes
+const authRoutes = require('./server/routes/auth');
+app.use('/api/auth', authRoutes);
 
 // Start the server and listen on the defined port
 app.listen(PORT, () => {

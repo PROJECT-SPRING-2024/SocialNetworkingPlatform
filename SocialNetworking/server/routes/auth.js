@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../app'); // Import the pool instance from app.js
-const { hashPassword, verifyPassword, generateToken } = require('../server/middleware/auth');
+const pool = require('../../app'); // Import the pool instance from app.js
+const { hashPassword, verifyPassword, generateToken } = require('../middleware/auth');
+
 
 // Route to handle user registration
 router.post('/signup', async (req, res) => {
