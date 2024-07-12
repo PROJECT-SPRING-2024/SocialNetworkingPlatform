@@ -17,6 +17,50 @@
     <!-- External CSS file for styling the webpage -->
     <link rel="stylesheet" href="css/styles.css" />
   </head>
+  <style>
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+  }
+  .modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+  }
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .preview img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+  }
+  </style>
   <body>
     <!-- Navigation Section -->
     <nav>
@@ -94,43 +138,15 @@
           <a href="#"><img src="images/watch.png" />Watch</a>
           <a href="#">See More</a>
         </div>
-        <!-- Shortcuts Section -->
-        <div class="shortcut-links">
-          <p>Your Shortcuts</p>
-          <a href="#"><img src="images/shortcut-1.png" />Frontend Developers</a>
-        </div>
+       
       </div>
 
       <!-- Middle Content Section -->
       <div class="main-content">
-        <!-- Story Section -->
-        <div class="story-gallery">
-          <!-- User's own story upload option -->
-          <div class="story story1">
-            <img src="images/upload.webp" />
-            <p>Post Story</p>
-          </div>
-          <!-- Stories of other users -->
-          <div class="story story2">
-            <img src="images/111.jpg" />
-            <p>Bill Gates</p>
-          </div>
-          <div class="story story3">
-            <img src="images/111.jpg" />
-            <p>Jeff Bezos</p>
-          </div>
-          <div class="story story3">
-            <img src="images/111.jpg" />
-            <p>Jeff Bezos</p>
-          </div>
-          <div class="story story3">
-            <img src="images/111.jpg" />
-            <p>Jeff Bezos</p>
-          </div>
-        </div>
+       
 
         <!-- Post Creation Section -->
-        <div class="write-post-container">
+        <div id="myBtn" class="write-post-container">
           <!-- User Profile Info -->
           <div class="user-profile">
             <img src="images/profile-pic.jpg" />
@@ -142,10 +158,10 @@
           <!-- Post Input Area -->
           <div class="post-input-container">
             <textarea rows="3" placeholder="What's on your mind, Chapal?"></textarea>
-            <div class="add-post-links">
-              <a href="#"><img src="images/live-video.png" /> Live Video</a>
+            <div  class="add-post-links">
+             
               <a href="#"><img src="images/photo.png" /> Photo/Video</a>
-              <a href="#"><img src="images/feeling.png" /> Feeling/Activity</a>
+              
             </div>
           </div>
         </div>
@@ -209,26 +225,9 @@
             <a href="#">More Info</a>
           </div>
         </div>
-        <!-- Another Example Event -->
-        <div class="event">
-          <div class="left-event">
-            <h3>5</h3>
-            <span>November</span>
-          </div>
-        </div>
+       
 
-        <!-- Conversation section -->
-        <div class="sidebar-title">
-          <h4>Conversation</h4>
-          <a href="#">Hide Chat</a>
-        </div>
-        <!-- Example Online User -->
-        <div class="online-list">
-          <div class="online">
-            <img src="images/member-1.jpg" />
-          </div>
-          <p>Bill Gates</p>
-        </div>
+
       </div>
     </div>
 
@@ -236,8 +235,49 @@
     <div class="footer">
       <p>© 2024 Shaik-Chapal</p>
     </div>
+<!-- The Modal -->
+<div id="myModal" class="modal">
 
-    <!-- JavaScript File for interactive features -->
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Create Post</h2>
+    <textarea id="postText" rows="4" cols="50" placeholder="What's on your mind?"></textarea>
+    <div class="preview">
+      <input type="file" id="fileInput" accept="image/*">
+      <img id="imagePreview" src="#" alt="Your Image" style="display: none;">
+    </div>
+    <button id="postButton">Post</button>
+  </div>
+
+</div>- JavaScript File for interactive features -->
     <script src="js/scripts.js"></script>
+    <script>
+  // Get the modal
+  var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+    </script>
   </body>
 </html>

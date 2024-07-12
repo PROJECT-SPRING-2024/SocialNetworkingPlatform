@@ -1,8 +1,11 @@
-// routes/posts.js
-const express = require('express'); // Import the Express library
-const pool = require('../db'); // Import the database connection pool
+const express = require('express'); 
+const pool = require('../../db'); 
+const { authenticate } = require('../middleware/auth'); // Import authentication middleware
 
-const router = express.Router(); // Create a new router object
+const router = express.Router(); 
+// Middleware to ensure user is authenticated
+// Uncomment if you have authentication middleware
+// router.use(authMiddleware.verifyToken);
 
 // Get all posts
 router.get('/', async (req, res) => {
@@ -17,7 +20,10 @@ router.get('/', async (req, res) => {
 // Create a post
 router.post('/', async (req, res) => {
   const { title, description } = req.body; // Destructure title and description from the request body
-  const author = req.user.userId;  // Extract userId from the JWT in the request object
+  const author = req.user ? req.user.userId : null; // Extract userId from the JWT in the request object (handle undefined user)
+  if (!author) {
+    return res.status(401).json({ error: 'Unauthorized' }); // Send a 401 error if user is not authenticated
+  }
   try {
     const result = await pool.query(
       'INSERT INTO posts (title, description, author, date) VALUES ($1, $2, $3, NOW()) RETURNING *', 
@@ -33,7 +39,10 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   const { id } = req.params; // Extract the post ID from the route parameters
   const { title, description } = req.body; // Destructure title and description from the request body
-  const author = req.user.userId; // Extract userId from the JWT in the request object
+  const author = req.user ? req.user.userId : null; // Extract userId from the JWT in the request object (handle undefined user)
+  if (!author) {
+    return res.status(401).json({ error: 'Unauthorized' }); // Send a 401 error if user is not authenticated
+  }
   try {
     const result = await pool.query(
       'UPDATE posts SET title = $1, description = $2 WHERE id = $3 AND author = $4 RETURNING *', 
@@ -51,7 +60,10 @@ router.put('/:id', async (req, res) => {
 // Delete a post
 router.delete('/:id', async (req, res) => {
   const { id } = req.params; // Extract the post ID from the route parameters
-  const author = req.user.userId; // Extract userId from the JWT in the request object
+  const author = req.user ? req.user.userId : null; // Extract userId from the JWT in the request object (handle undefined user)
+  if (!author) {
+    return res.status(401).json({ error: 'Unauthorized' }); // Send a 401 error if user is not authenticated
+  }
   try {
     const result = await pool.query(
       'DELETE FROM posts WHERE id = $1 AND author = $2 RETURNING *', 
