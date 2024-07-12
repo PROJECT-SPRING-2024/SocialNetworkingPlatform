@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Ensures compatibility with Internet Explorer -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Ensures proper scaling on mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SocialNetworking - Log in or Sign up</title>
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -104,7 +104,6 @@
                         <p>
                             <a style="color: #1877f2;" onclick="window.location.href='/forgot-pass'; return false;">Forgot password?</a>
                         </p>
-                        
                         <hr>
                         <button type="button" class="CA btn btn-success" onclick="window.location.href='/signup'">Create new account</button>
                     </form>
@@ -116,6 +115,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Toastify JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
             event.preventDefault();
@@ -134,9 +135,26 @@
             const result = await response.json();
             if (response.ok) {
                 localStorage.setItem('token', result.token);
-                window.location.href = '/home';
+                Toastify({
+                    text: "Login successful!",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top", 
+                    position: "right", 
+                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                }).showToast();
+                setTimeout(() => {
+                    window.location.href = '/home';
+                }, 3000);
             } else {
-                alert(result.error);
+                Toastify({
+                    text: result.error,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top", 
+                    position: "right", 
+                    backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                }).showToast();
             }
         });
     </script>
