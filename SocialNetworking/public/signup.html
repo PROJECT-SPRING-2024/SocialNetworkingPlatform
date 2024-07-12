@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SocialNetworking - Log in or Sign up</title>
+    <title>SocialNetworking - Sign Up</title>
     <style>
         /* Basic styling for the body to center content and set background color */
         body {
@@ -53,7 +53,7 @@
             font-size: 1em;
         }
 
-        /* Styling for the login button */
+        /* Styling for the signup button */
         .log {
             background-color: #31997aa6;
             color: #fff;
@@ -67,7 +67,7 @@
             background-color: #165bd4;
         }
 
-        /* Styling for the create account button */
+        /* Styling for the login button */
         .CA {
             background-color: #42b72a;
             color: #fff;
@@ -110,7 +110,7 @@
                     <img src="images/logo.png" alt="SocialNetworking Logo">
                 </div>
                 <div class="para_1">
-                    <p>SignUp</p>
+                    <p>Sign Up</p>
                 </div>       
             </div>
 
@@ -118,31 +118,27 @@
             <div id="con_2">
                 <!-- Form container -->
                 <div id="form1">
-                    <form id="loginForm" action="/login" method="post">
+                    <form id="signupForm" action="/api/auth/signup" method="post">
+                        <!-- Name input field -->
+                        <input type="text" name="name" required placeholder="Name" class="input_user">
                         <!-- Email input field -->
-                        <input type="email" name="email" required placeholder="Email or phone number" class="input_user">
+                        <input type="email" name="email" required placeholder="Email" class="input_user">
                         <!-- Password input field -->
                         <input type="password" name="password" required placeholder="Password" class="input_user">
-                        <!-- Login button -->
-                        <button type="submit" class="input_user log">SignUp</button>
-                        <!-- Forgot password link -->
+                        <!-- Signup button -->
+                        <button type="submit" class="input_user log">Sign Up</button>
+                        <!-- Already have an account link -->
                         <p>
-                            <a style="color: #1877f2;" onclick="window.location.href='/forgot-pass'; return false;">Forgot password?</a>
+                            <a style="color: #1877f2;" onclick="window.location.href='/login'; return false;">Already have an account? Log in</a>
                         </p>
-                        
-                        <!-- Horizontal rule -->
-                        <hr>
-                        <!-- Create new account button -->
-                        <button type="button" class="CA" onclick="window.location.href='/login'">Login</button>
                     </form>
                 </div>
-               
             </div>
         </section>
     </main>
     <script>
         // Add event listener to handle form submission
-        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        document.getElementById('signupForm').addEventListener('submit', async function(event) {
             event.preventDefault();  // Prevent default form submission behavior
             const form = event.target;
             const formData = new FormData(form);
@@ -161,7 +157,7 @@
             const result = await response.json();
             if (response.ok) {
                 localStorage.setItem('token', result.token);  // Store the token in local storage
-                window.location.href = '/';  // Redirect to home page
+                window.location.href = '/home';  // Redirect to home page
             } else {
                 alert(result.error);  // Show error message
             }

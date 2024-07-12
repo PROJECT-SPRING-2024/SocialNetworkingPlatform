@@ -3,7 +3,6 @@ const router = express.Router();
 const pool = require('../../app'); // Import the pool instance from app.js
 const { hashPassword, verifyPassword, generateToken } = require('../middleware/auth');
 
-
 // Route to handle user registration
 router.post('/signup', async (req, res) => {
   const { email, password, name } = req.body;
@@ -16,9 +15,10 @@ router.post('/signup', async (req, res) => {
     );
 
     const newUser = result.rows[0];
-    res.status(201).json({ message: 'User created', user: newUser });
+    const token = generateToken(newUser);
+    res.status(201).json({ message: 'User created', token });
   } catch (err) {
-    console.error(err);
+    console.error('Error creating user:', err);
     res.status(500).json({ error: 'Error creating user' });
   }
 });
@@ -45,7 +45,7 @@ router.post('/login', async (req, res) => {
 
     res.json({ message: 'Logged in successfully', token });
   } catch (err) {
-    console.error(err);
+    console.error('Error logging in:', err);
     res.status(500).json({ error: 'Error logging in' });
   }
 });
