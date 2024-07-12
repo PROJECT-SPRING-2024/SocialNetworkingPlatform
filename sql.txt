@@ -3,7 +3,7 @@ create database social;
 next comand
 
 \c social
-
+GRANT ALL PRIVILEGES ON TABLE users TO schapal;
 next comand
 
 CREATE TABLE users (
