@@ -401,6 +401,35 @@
       imagePreview.style.display = 'none';
     }
   }
+
+
+
+
+  document.getElementById('postForm').onsubmit = async function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+    try {
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Adjust if needed for your auth system
+        }
+      });
+      const data = await response.json();
+      console.log(data);
+      // Handle response, e.g., close modal, show message, etc.
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+
+
+
+
+
+
     </script>
   </body>
 </html>
