@@ -313,24 +313,8 @@
       <!-- Right Sidebar -->
       <div class="right-sidebar">
         <!-- Events Section -->
-        <div class="sidebar-title">
-          <h4>Events</h4>
-          <a href="#">See All</a>
-        </div>
-        <!-- Example Event -->
-        <div class="event">
-          <div class="left-event">
-            <h3>1</h3>
-            <span>October</span>
-          </div>
-          <div class="right-event">
-            <h4>Social Media</h4>
-            <p>
-              <i class="fa-solid fa-location-dot"></i>Ambience Mall, Gurgaon
-            </p>
-            <a href="#">More Info</a>
-          </div>
-        </div>
+       
+    
        
 
 
@@ -341,95 +325,77 @@
     <div class="footer">
       <p>© 2024 Shaik-Chapal</p>
     </div>
-<!-- The Modal -->
-<div id="myModal" class="modal">
-
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>Create Post</h2>
-    <textarea id="postText" rows="4" cols="50" placeholder="What's on your mind?"></textarea>
-    <div class="preview">
-      <input type="file" id="fileInput" accept="image/*">
-      <img id="imagePreview" src="#" alt="Your Image" style="display: none;">
+  <!-- The Modal -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Create Post</h2>
+      <form id="postForm" enctype="multipart/form-data">
+        <input type="text" id="postTitle" name="title" placeholder="Title" required>
+        <textarea id="postText" name="description" rows="4" cols="50" placeholder="What's on your mind?" required></textarea>
+        <div class="preview">
+          <input type="file" id="fileInput" name="image" accept="image/*">
+          <img id="imagePreview" src="#" alt="Your Image" style="display: none;">
+        </div>
+        <button type="submit" id="postButton">Post</button>
+      </form>
     </div>
-    <button id="postButton">Post</button>
   </div>
 
-</div>- JavaScript File for interactive features -->
-    <script src="js/scripts.js"></script>
-    <script>
- 
-  // Get the modal
-  const modal = document.getElementById('myModal');
+  <script>
+    const modal = document.getElementById('myModal');
+    const btn = document.getElementById('myBtn');
+    const span = document.getElementsByClassName('close')[0];
+    const fileInput = document.getElementById('fileInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const postForm = document.getElementById('postForm');
 
-  // Get the button that opens the modal
-  const btn = document.getElementById('myBtn');
+    btn.onclick = function() {
+      modal.style.display = 'block';
+    }
 
-  // Get the <span> element that closes the modal
-  const span = document.getElementsByClassName('close')[0];
-
-  // When the user clicks on the button, open the modal
-  btn.onclick = function() {
-    modal.style.display = 'block';
-  }
-
-  // When the user clicks on <span> (x), close the modal
-  span.onclick = function() {
-    modal.style.display = 'none';
-  }
-
-  // When the user clicks anywhere outside of the modal, close it
-  window.onclick = function(event) {
-    if (event.target == modal) {
+    span.onclick = function() {
       modal.style.display = 'none';
     }
-  }
 
-  const fileInput = document.getElementById('fileInput');
-  const imagePreview = document.getElementById('imagePreview');
-
-  fileInput.onchange = function(event) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        imagePreview.src = e.target.result;
-        imagePreview.style.display = 'block';
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = 'none';
       }
-      reader.readAsDataURL(file);
-    } else {
-      imagePreview.style.display = 'none';
     }
-  }
 
-
-
-
-  document.getElementById('postForm').onsubmit = async function(event) {
-    event.preventDefault();
-    const formData = new FormData(this);
-    try {
-      const response = await fetch('/api/posts', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Adjust if needed for your auth system
+    fileInput.onchange = function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
         }
-      });
-      const data = await response.json();
-      console.log(data);
-      // Handle response, e.g., close modal, show message, etc.
-    } catch (error) {
-      console.error('Error:', error);
+        reader.readAsDataURL(file);
+      } else {
+        imagePreview.style.display = 'none';
+      }
     }
-  }
 
-
-
-
-
-
-
-    </script>
-  </body>
+    postForm.onsubmit = async function(event) {
+      event.preventDefault();
+      const formData = new FormData(postForm);
+      try {
+        const response = await fetch('/api/posts', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        const data = await response.json();
+        console.log(data);
+        modal.style.display = 'none';
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  </script>
+</body>
 </html>
