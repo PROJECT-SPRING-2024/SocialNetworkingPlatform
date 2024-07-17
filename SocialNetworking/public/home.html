@@ -272,9 +272,43 @@
     </div>
   </div>
 </div>
+
+
+
+
+
+
+<div class="search-container">
+  <input type="text" id="searchInput" placeholder="Search posts...">
+</div>
+
+<div class="filter-container">
+  <select id="filterSelect">
+    <option value="">All</option>
+    <option value="author1">Author 1</option>
+    <option value="author2">Author 2</option>
+    <!-- Add more filters as needed -->
+  </select>
+</div>
+
+<div id="postsContainer"></div>
+
+<div class="pagination-container">
+  <button id="prevPage">Previous</button>
+  <span id="currentPage">1</span>
+  <button id="nextPage">Next</button>
+</div>
+
+
+
+
+
+
+
+
         <!-- Uploaded Posts Section -->
         <!-- Example Post -->
-        <div class="post-container">
+        <!-- <div class="post-container">
           <div class="post-row">
             <div class="user-profile">
               <img src="images/profile-pic.jpg" />
@@ -304,7 +338,7 @@
               <i class="fa-solid fa-caret-down"></i>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- Load More Button -->
         <button type="button" class="load-more-button">Load More</button>
@@ -344,6 +378,82 @@
   </div>
 
   <script>
+
+// public/js/scripts.js
+
+document.addEventListener('DOMContentLoaded', () => {
+  let currentPage = 1;
+
+  const searchInput = document.getElementById('searchInput');
+  const filterSelect = document.getElementById('filterSelect');
+  const postsContainer = document.getElementById('postsContainer');
+  const prevPage = document.getElementById('prevPage');
+  const nextPage = document.getElementById('nextPage');
+  const currentPageDisplay = document.getElementById('currentPage');
+
+  const fetchPosts = async () => {
+    const search = searchInput.value;
+    const filter = filterSelect.value;
+
+    const response = await fetch(`/api/posts?page=${currentPage}&search=${search}&filter=${filter}`);
+    const posts = await response.json();
+    
+    postsContainer.innerHTML = '';
+    posts.forEach(post => {
+      const postElement = document.createElement('div');
+      postElement.classList.add('post-container');
+
+      postElement.innerHTML = `
+        <div class="post-row">
+          <div class="user-profile">
+            <img src="images/profile-pic.jpg" />
+            <div>
+              <p>${post.author}</p>
+              <span>${new Date(post.date).toLocaleString()}</span>
+            </div>
+          </div>
+          <a href="#"><i class="fa-solid fa-ellipsis-v"></i></a>
+        </div>
+        <p class="post-text">
+          <span>${post.title}</span> ${post.description}
+        </p>
+        ${post.image ? `<img src="${post.image}" class="post-img" />` : ''}
+        <div class="post-row">
+          <div class="activity-icons">
+            <div><img src="images/like-blue.png" /> 75k+</div>
+            <div><img src="images/comments.png" /> 5k+</div>
+            <div><img src="images/share.png" /> 950</div>
+          </div>
+          <div class="post-profile-icon">
+            <img src="images/profile-pic.jpg" />
+            <i class="fa-solid fa-caret-down"></i>
+          </div>
+        </div>
+      `;
+      
+      postsContainer.appendChild(postElement);
+    });
+  };
+
+  searchInput.addEventListener('input', fetchPosts);
+  filterSelect.addEventListener('change', fetchPosts);
+  prevPage.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      currentPageDisplay.textContent = currentPage;
+      fetchPosts();
+    }
+  });
+  nextPage.addEventListener('click', () => {
+    currentPage++;
+    currentPageDisplay.textContent = currentPage;
+    fetchPosts();
+  });
+
+  fetchPosts();
+});
+
+
     const modal = document.getElementById('myModal');
     const btn = document.getElementById('myBtn');
     const span = document.getElementsByClassName('close')[0];
