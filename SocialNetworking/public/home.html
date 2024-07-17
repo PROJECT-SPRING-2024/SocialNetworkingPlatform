@@ -331,7 +331,8 @@
       <span class="close">&times;</span>
       <h2>Create Post</h2>
       <form id="postForm" enctype="multipart/form-data">
-        <input type="text" id="postTitle" name="title" placeholder="Title" required>
+      <textarea type="text" id="postTitle" name="title" placeholder="Title" style="height: 50px;" required></textarea>
+
         <textarea id="postText" name="description" rows="4" cols="50" placeholder="What's on your mind?" required></textarea>
         <div class="preview">
           <input type="file" id="fileInput" name="image" accept="image/*">
