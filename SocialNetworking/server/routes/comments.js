@@ -1,31 +1,48 @@
-// routes/comments.js
-// Import necessary modules
-const express = require('express');
-const pool = require('../db'); // Import the database connection pool
+// server/routes/comments.js
 
-// Create a new router instance
+const express = require('express');
+const pool = require('../../db');
+const { authenticateToken } = require('../middleware/auth'); // Ensure this path is correct
+
 const router = express.Router();
 
-// Route to add a new comment
-router.post('/', async (req, res) => {
-  // Extract postId and text from the request body
-  const { postId, text } = req.body;
-  // Extract author (userId) from the request user object
-  const author = req.user.userId;
+// Route to fetch a comment by ID
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
   try {
-    // Execute the SQL query to insert a new comment into the comments table
-    // Use NOW() for the current date and time
+    const result = await pool.query('SELECT * FROM comments WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Comment not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Ensure to use authenticateToken middleware for routes that require authentication
+
+
+// Route to add a new comment
+router.post('/', authenticateToken, async (req, res) => {
+  const { postId, text } = req.body;
+  const author = req.user ? req.user.userId : null; // Ensure req.user is correctly set
+
+  if (!author) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
     const result = await pool.query(
       'INSERT INTO comments (post_id, text, author, date) VALUES ($1, $2, $3, NOW()) RETURNING *',
       [postId, text, author]
     );
-    // Send back the newly created comment as a JSON response with status 201 (Created)
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    // If an error occurs, send back a 500 status and the error message
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Route to edit an existing comment
 router.put('/:id', async (req, res) => {

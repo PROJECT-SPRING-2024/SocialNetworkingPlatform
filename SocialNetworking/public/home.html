@@ -340,8 +340,7 @@
           </div>
         </div> -->
 
-        <!-- Load More Button -->
-        <button type="button" class="load-more-button">Load More</button>
+       
       </div>
 
       <!-- Right Sidebar -->
@@ -377,80 +376,156 @@
     </div>
   </div>
 
+ <!-- Comment Modal -->
+ <div id="commentModal" class="modal">
+  <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Add Comment</h2>
+      <form id="commentForm">
+          <textarea id="commentText" name="comment" placeholder="Add your comment" required></textarea>
+          <button type="submit" id="commentButton">Post Comment</button>
+
+          fetch comment  list when modal click
+      </form>
+  </div>
+</div>
   <script>
 
 // public/js/scripts.js
-
 document.addEventListener('DOMContentLoaded', () => {
-  let currentPage = 1;
+    let currentPage = 1;
 
-  const searchInput = document.getElementById('searchInput');
-  const filterSelect = document.getElementById('filterSelect');
-  const postsContainer = document.getElementById('postsContainer');
-  const prevPage = document.getElementById('prevPage');
-  const nextPage = document.getElementById('nextPage');
-  const currentPageDisplay = document.getElementById('currentPage');
+    const searchInput = document.getElementById('searchInput');
+    const filterSelect = document.getElementById('filterSelect');
+    const postsContainer = document.getElementById('postsContainer');
+    const prevPage = document.getElementById('prevPage');
+    const nextPage = document.getElementById('nextPage');
+    const currentPageDisplay = document.getElementById('currentPage');
+    const commentModal = document.getElementById('commentModal');
+    const closeBtn = document.getElementsByClassName('close')[0];
+    const commentForm = document.getElementById('commentForm');
+    const commentText = document.getElementById('commentText');
+    let currentPostId = null;
 
-  const fetchPosts = async () => {
-    const search = searchInput.value;
-    const filter = filterSelect.value;
+    const fetchPosts = async () => {
+        const search = searchInput.value;
+        const filter = filterSelect.value;
 
-    const response = await fetch(`/api/posts?page=${currentPage}&search=${search}&filter=${filter}`);
-    const posts = await response.json();
-    
-    postsContainer.innerHTML = '';
-    posts.forEach(post => {
-      const postElement = document.createElement('div');
-      postElement.classList.add('post-container');
+        const response = await fetch(`/api/posts?page=${currentPage}&search=${search}&filter=${filter}`);
+        const posts = await response.json();
 
-      postElement.innerHTML = `
-        <div class="post-row">
-          <div class="user-profile">
-            <img src="images/profile-pic.jpg" />
-            <div>
-              <p>${post.author}</p>
-              <span>${new Date(post.date).toLocaleString()}</span>
-            </div>
-          </div>
-          <a href="#"><i class="fa-solid fa-ellipsis-v"></i></a>
-        </div>
-        <p class="post-text">
-          <span>${post.title}</span> ${post.description}
-        </p>
-        ${post.image ? `<img src="${post.image}" class="post-img" />` : ''}
-        <div class="post-row">
-          <div class="activity-icons">
-            <div><img src="images/like-blue.png" /> 75k+</div>
-            <div><img src="images/comments.png" /> 5k+</div>
-            <div><img src="images/share.png" /> 950</div>
-          </div>
-          <div class="post-profile-icon">
-            <img src="images/profile-pic.jpg" />
-            <i class="fa-solid fa-caret-down"></i>
-          </div>
-        </div>
-      `;
-      
-      postsContainer.appendChild(postElement);
+        postsContainer.innerHTML = '';
+        posts.forEach(post => {
+            const postElement = document.createElement('div');
+            postElement.classList.add('post-container');
+
+            postElement.innerHTML = `
+                <div class="post-row">
+                    <div class="user-profile">
+                        <img src="images/profile-pic.jpg" />
+                        <div>
+                            <p>${post.author}</p>
+                            <span>${new Date(post.date).toLocaleString()}</span>
+                        </div>
+                    </div>
+                    <a href="#"><i class="fa-solid fa-ellipsis-v"></i></a>
+                </div>
+                <p class="post-text">
+                    <span>${post.title}</span> ${post.description}
+                </p>
+                ${post.image ? `<img src="${post.image}" class="post-img" />` : ''}
+                <div class="post-row">
+                    <div class="activity-icons">
+                        <div><img src="images/like-blue.png" /> 75k+</div>
+                        <div class="comment-section" id="commentSection-${post.id}">
+                            <img src="images/comments.png" class="comment-icon" data-post-id="${post.id}" /> 5k+
+                        </div>
+                        <div><img src="images/share.png" /> 950</div>
+                    </div>
+                    <div class="post-profile-icon">
+                        <img src="images/profile-pic.jpg" />
+                        <i class="fa-solid fa-caret-down"></i>
+                    </div>
+                </div>
+            `;
+
+            postsContainer.appendChild(postElement);
+
+            fetchComments(post.id);
+        });
+
+        const commentIcons = document.querySelectorAll('.comment-icon');
+        commentIcons.forEach(icon => {
+            icon.addEventListener('click', (event) => {
+                currentPostId = event.target.dataset.postId;
+                commentModal.style.display = 'block';
+            });
+        });
+    };
+
+    const fetchComments = async (postId) => {
+        const response = await fetch(`/api/comments/${postId}`);
+        const comments = await response.json();
+        const commentsContainer = document.getElementById(`commentsContainer-${postId}`);
+        
+        commentsContainer.innerHTML = '';
+        comments.forEach(comment => {
+            const commentElement = document.createElement('div');
+            commentElement.classList.add('comment');
+            commentElement.innerHTML = `<p>${comment.author}: ${comment.text}</p>`;
+            commentsContainer.appendChild(commentElement);
+        });
+    };
+
+    searchInput.addEventListener('input', fetchPosts);
+    filterSelect.addEventListener('change', fetchPosts);
+    prevPage.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            currentPageDisplay.textContent = currentPage;
+            fetchPosts();
+        }
     });
-  };
+    nextPage.addEventListener('click', () => {
+        currentPage++;
+        currentPageDisplay.textContent = currentPage;
+        fetchPosts();
+    });
 
-  searchInput.addEventListener('input', fetchPosts);
-  filterSelect.addEventListener('change', fetchPosts);
-  prevPage.addEventListener('click', () => {
-    if (currentPage > 1) {
-      currentPage--;
-      currentPageDisplay.textContent = currentPage;
-      fetchPosts();
-    }
-  });
-  nextPage.addEventListener('click', () => {
-    currentPage++;
-    currentPageDisplay.textContent = currentPage;
+    closeBtn.onclick = function() {
+        commentModal.style.display = 'none';
+    };
+
+    window.onclick = function(event) {
+        if (event.target == commentModal) {
+            commentModal.style.display = 'none';
+        }
+    };
+
+    commentForm.onsubmit = async function(event) {
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append('postId', currentPostId);
+        formData.append('text', commentText.value);
+
+        try {
+            const response = await fetch(`/api/comments`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            const data = await response.json();
+            console.log(data);
+            commentModal.style.display = 'none';
+            fetchComments(currentPostId);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     fetchPosts();
-  });
-
-  fetchPosts();
 });
 
 

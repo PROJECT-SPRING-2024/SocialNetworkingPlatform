@@ -31,9 +31,10 @@ app.get('/forgot-pass', (req, res) => {
 
 const authRoutes = require('./server/routes/auth');
 const postRoutes = require('./server/routes/posts');
-
+const commentsRoutes = require('./server/routes/comments');
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/comments', commentsRoutes);
 
 app.post('/upload', multer().single('image'), (req, res) => {
   res.json({ file: req.file });
