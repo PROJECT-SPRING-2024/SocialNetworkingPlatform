@@ -45,4 +45,6 @@ To get started with the Social Networking Platform, follow these steps:
 - **bcrypt:** Password hashing library for Node.js.
 - **jsonwebtoken:** JSON Web Token implementation for Node.js.
 - **HTML/CSS/JavaScript:** Frontend development technologies for building user interfaces.
-
+![Screenshot (3)](https://github.com/user-attachments/assets/5b124a9b-364f-417c-88c9-740a3a58d7d6)
+![Screenshot (1)](https://github.com/user-attachments/assets/b9304ea1-8076-4b31-a255-f92193df2cab)
+![Screenshot (2)](https://github.com/user-attachments/assets/4aa61b02-1bba-41d4-a7fc-ae51db549199)
