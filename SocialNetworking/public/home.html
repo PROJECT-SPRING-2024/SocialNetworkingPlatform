@@ -439,52 +439,49 @@
           const filter = filterSelect.value;
 
           const response = await fetch(
-            `/api/posts?page=${currentPage}&search=${search}&filter=${filter}`
+            `/api/posts?`
           );
           const posts = await response.json();
 
+          console.log(posts); 
           postsContainer.innerHTML = "";
-          posts.forEach((post) => {
-            const postElement = document.createElement("div");
-            postElement.classList.add("post-container");
+    posts.forEach((post) => {
+      const postElement = document.createElement("div");
+      postElement.classList.add("post-container");
 
-            postElement.innerHTML = `
-                <div class="post-row">
-                    <div class="user-profile">
-                        <img src="images/profile-pic.jpg" />
-                        <div>
-                            <p>${post.author}</p>
-                            <span>${new Date(post.date).toLocaleString()}</span>
-                        </div>
-                    </div>
-                    <a href="#"><i class="fa-solid fa-ellipsis-v"></i></a>
-                </div>
-                <p class="post-text">
-                    <span>${post.title}</span> ${post.description}
-                </p>
-                ${
-                  post.image
-                    ? `<img src="${post.image}" class="post-img" />`
-                    : ""
-                }
-                <div class="post-row">
-                    <div class="activity-icons">
-                        <div><img src="images/like-blue.png" /> 75k+</div>
-                        <div class="comment-section" id="commentSection-${
-                          post.id
-                        }">
-                            <img src="images/comments.png" class="comment-icon" data-post-id="${
-                              post.id
-                            }" /> 5k+
-                        </div>
-                        <div><img src="images/share.png" /> 950</div>
-                    </div>
-                    <div class="post-profile-icon">
-                        <img src="images/profile-pic.jpg" />
-                        <i class="fa-solid fa-caret-down"></i>
-                    </div>
-                </div>
-            `;
+      postElement.innerHTML = `
+        <div class="post-row">
+          <div class="user-profile">
+            <img src="${post.author_profile_image}" />
+            <div>
+              <p>${post.author_name}</p>
+              <span>${new Date(post.post_date).toLocaleString()}</span>
+            </div>
+          </div>
+          <a href="#"><i class="fa-solid fa-ellipsis-v"></i></a>
+        </div>
+        <p class="post-text">
+          <span>${post.title}</span> ${post.description}
+        </p>
+        ${
+          post.image
+            ? `<img src="${post.image}" class="post-img" />`
+            : ""
+        }
+        <div class="post-row">
+          <div class="activity-icons">
+            <div><img src="images/like-blue.png" /> ${post.likes_count}</div>
+            <div class="comment-section" id="commentSection-${post.post_id}">
+              <img src="images/comments.png" class="comment-icon" data-post-id="${post.post_id}" /> ${post.comments_count}
+            </div>
+            <div><img src="images/share.png" /> 950</div>
+          </div>
+          <div class="post-profile-icon">
+            <img src="${post.author_profile_image}" />
+            <i class="fa-solid fa-caret-down"></i>
+          </div>
+        </div>
+      `;
 
             postsContainer.appendChild(postElement);
 

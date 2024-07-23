@@ -21,15 +21,51 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Get all posts
+// Get all posts
 router.get('/', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM posts');
+    const query = `
+      SELECT
+        p.id AS post_id,
+        p.title,
+        p.description,
+        p.image,
+        p.date AS post_date,
+        u.name AS author_name,
+        u.email AS author_email,
+        u.profile_image AS author_profile_image,
+        COALESCE(l.likes_count, 0) AS likes_count,
+        COALESCE(c.comments_count, 0) AS comments_count
+      FROM
+        posts p
+        JOIN users u ON p.author = u.id
+        LEFT JOIN (
+          SELECT
+            post_id,
+            COUNT(*) AS likes_count
+          FROM
+            likes
+          GROUP BY
+            post_id
+        ) l ON p.id = l.post_id
+        LEFT JOIN (
+          SELECT
+            post_id,
+            COUNT(*) AS comments_count
+          FROM
+            comments
+          GROUP BY
+            post_id
+        ) c ON p.id = c.post_id;
+    `;
+    const result = await pool.query(query);
+    console.log('Query Result:', result.rows); // Log the query result
     res.json(result.rows);
   } catch (err) {
+    console.error('Error executing query:', err); // Log the error details
     res.status(500).json({ error: err.message });
   }
 });
-
 // Create a post
 router.post('/', authenticateToken, upload.single('image'), async (req, res) => {
   const { title, description } = req.body;
