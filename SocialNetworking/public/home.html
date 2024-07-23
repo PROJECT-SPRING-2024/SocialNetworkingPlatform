@@ -269,18 +269,6 @@
 
       <!-- Middle Content Section -->
       <div class="main-content">
-        <div class="search-container">
-          <input type="text" id="searchInput" placeholder="Search posts..." />
-        </div>
-
-        <div class="filter-container">
-          <select id="filterSelect">
-            <option value="">All</option>
-            <option value="author1">Author 1</option>
-            <option value="author2">Author 2</option>
-            <!-- Add more filters as needed -->
-          </select>
-        </div>
 
         <!-- Post Creation Section -->
         <div id="myBtn" class="write-post-container">
@@ -309,11 +297,6 @@
 
         <div id="postsContainer"></div>
 
-        <div class="pagination-container">
-          <button id="prevPage">Previous</button>
-          <span id="currentPage">1</span>
-          <button id="nextPage">Next</button>
-        </div>
 
         <!-- Uploaded Posts Section -->
         <!-- Example Post -->
@@ -421,11 +404,10 @@
       document.addEventListener("DOMContentLoaded", () => {
         let currentPage = 1;
 
-        const searchInput = document.getElementById("searchInput");
-        const filterSelect = document.getElementById("filterSelect");
+       
+       
         const postsContainer = document.getElementById("postsContainer");
-        const prevPage = document.getElementById("prevPage");
-        const nextPage = document.getElementById("nextPage");
+        
         const currentPageDisplay = document.getElementById("currentPage");
         const commentModal = document.getElementById("commentModal");
         const closeBtn = document.getElementsByClassName("close")[0];
@@ -435,24 +417,30 @@
         let currentPostId = null;
 
         const fetchPosts = async () => {
-          const search = searchInput.value;
-          const filter = filterSelect.value;
+  try {
+    const response = await fetch(`/api/posts`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const posts = await response.json();
 
-          const response = await fetch(
-            `/api/posts?`
-          );
-          const posts = await response.json();
+    console.log(posts);
 
-          console.log(posts); 
-          postsContainer.innerHTML = "";
+    const postsContainer = document.getElementById('postsContainer');
+    postsContainer.innerHTML = "";
+
     posts.forEach((post) => {
       const postElement = document.createElement("div");
       postElement.classList.add("post-container");
 
+      const userImage = post.author_profile_image || "images/profile-pic.jpg";
+      const likeIcon = post.likes_count > 0 ? "images/like-blue.png" : "images/like.png";
+      const likeCountText = post.likes_count > 0 ? post.likes_count : "0";
+
       postElement.innerHTML = `
         <div class="post-row">
           <div class="user-profile">
-            <img src="${post.author_profile_image}" />
+            <img src="${userImage}" alt="User Picture" />
             <div>
               <p>${post.author_name}</p>
               <span>${new Date(post.post_date).toLocaleString()}</span>
@@ -463,39 +451,43 @@
         <p class="post-text">
           <span>${post.title}</span> ${post.description}
         </p>
-        ${
-          post.image
-            ? `<img src="${post.image}" class="post-img" />`
-            : ""
-        }
+        ${post.image ? `<img src="${post.image}" class="post-img" />` : ""}
         <div class="post-row">
           <div class="activity-icons">
-            <div><img src="images/like-blue.png" /> ${post.likes_count}</div>
+            <div><img src="${likeIcon}" /> ${likeCountText}</div>
             <div class="comment-section" id="commentSection-${post.post_id}">
               <img src="images/comments.png" class="comment-icon" data-post-id="${post.post_id}" /> ${post.comments_count}
             </div>
             <div><img src="images/share.png" /> 950</div>
           </div>
           <div class="post-profile-icon">
-            <img src="${post.author_profile_image}" />
+            <img src="${userImage}" alt="User Picture" />
             <i class="fa-solid fa-caret-down"></i>
           </div>
         </div>
       `;
 
-            postsContainer.appendChild(postElement);
+      postsContainer.appendChild(postElement);
 
-            fetchComments(post.id);
-          });
+      // Fetch comments for each post
+      fetchComments(post.id);
+    });
 
-          const commentIcons = document.querySelectorAll(".comment-icon");
-          commentIcons.forEach((icon) => {
-            icon.addEventListener("click", (event) => {
-              currentPostId = event.target.dataset.postId;
-              commentModal.style.display = "block";
-            });
-          });
-        };
+    const commentIcons = document.querySelectorAll(".comment-icon");
+    commentIcons.forEach((icon) => {
+      icon.addEventListener("click", (event) => {
+        const currentPostId = event.target.dataset.postId;
+        const commentModal = document.getElementById('commentModal');
+        commentModal.style.display = "block";
+      });
+    });
+  } catch (error) {
+    console.error('Failed to fetch posts:', error);
+  }
+};
+
+
+
 
         const fetchComments = async (postId) => {
           const response = await fetch(`/api/comments/${postId}`);
@@ -513,20 +505,8 @@
           });
         };
 
-        searchInput.addEventListener("input", fetchPosts);
-        filterSelect.addEventListener("change", fetchPosts);
-        prevPage.addEventListener("click", () => {
-          if (currentPage > 1) {
-            currentPage--;
-            currentPageDisplay.textContent = currentPage;
-            fetchPosts();
-          }
-        });
-        nextPage.addEventListener("click", () => {
-          currentPage++;
-          currentPageDisplay.textContent = currentPage;
-          fetchPosts();
-        });
+       
+
 
         closeBtn.onclick = function () {
           commentModal.style.display = "none";
