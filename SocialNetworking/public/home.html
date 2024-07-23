@@ -454,7 +454,9 @@
         ${post.image ? `<img src="${post.image}" class="post-img" />` : ""}
         <div class="post-row">
           <div class="activity-icons">
-            <div><img src="${likeIcon}" /> ${likeCountText}</div>
+           <div class="like-section" data-post-id="${post.post_id}" data-liked="${post.likes_count > 0}">
+              <img src="${likeIcon}" class="like-icon" /> ${likeCountText}
+            </div>
             <div class="comment-section" id="commentSection-${post.post_id}">
               <img src="images/comments.png" class="comment-icon" data-post-id="${post.post_id}" /> ${post.comments_count}
             </div>
@@ -471,6 +473,19 @@
 
       // Fetch comments for each post
       fetchComments(post.id);
+    });
+
+     // Add event listeners for like icons
+     const likeSections = document.querySelectorAll(".like-section");
+    likeSections.forEach((section) => {
+      section.addEventListener("click", (event) => {
+        const likeIcon = section.querySelector(".like-icon");
+        const isLiked = section.getAttribute("data-liked") === "true";
+        const newLikeIcon = isLiked ? "images/like.png" : "images/like-blue.png";
+        likeIcon.src = newLikeIcon;
+        section.setAttribute("data-liked", !isLiked);
+        alert(isLiked ? "Like removed!" : "Liked!");
+      });
     });
 
     const commentIcons = document.querySelectorAll(".comment-icon");
