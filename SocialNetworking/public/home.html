@@ -19,156 +19,170 @@
   </head>
   <style>
     .write-post-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 20px;
-    cursor: pointer;
-  }
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 15px 0px;
+      cursor: pointer;
+    }
 
-  .user-profile {
-    display: flex;
-    align-items: center;
-  }
+    .user-profile {
+      display: flex;
+      align-items: center;
+    }
 
-  .user-profile img {
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-  }
+    .user-profile img {
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
+    }
 
-  .user-profile div p {
-    margin: 0;
-    font-weight: bold;
-  }
+    .user-profile div p {
+      margin: 0;
+      font-weight: bold;
+    }
 
-  .user-profile div small {
-    color: #666;
-  }
+    .user-profile div small {
+      color: #666;
+    }
 
-  .post-input-container {
-    margin-top: 10px;
-  }
+    .post-input-container {
+      margin-top: 10px;
+    }
 
-  .post-input-container textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    resize: none;
-  }
+    .post-input-container textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      resize: none;
+    }
 
-  .add-post-links {
-    margin-top: 10px;
-  }
+    .add-post-links {
+      margin-top: 10px;
+    }
 
-  .add-post-links a {
-    display: inline-block;
-    margin-right: 10px;
-    color: #007bff;
-    text-decoration: none;
-  }
+    .add-post-links a {
+      display: inline-block;
+      margin-right: 10px;
+      color: #007bff;
+      text-decoration: none;
+    }
 
-  .add-post-links a img {
-    vertical-align: middle;
-    margin-right: 5px;
-  }
+    .add-post-links a img {
+      vertical-align: middle;
+      margin-right: 5px;
+    }
 
-  .footer {
-    text-align: center;
-    margin-top: 20px;
-    color: #666;
-  }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+    }
 
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
-  }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
+    }
 
-  .modal-content {
-    background-color: #fefefe;
-    margin: 10% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
-  }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
 
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
 
-  .close:hover,
-  .close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-  }
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
 
-  h2 {
-    margin-top: 0;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    color: #333;
-  }
+    h2 {
+      margin-top: 0;
+      font-family: "Comic Sans MS", cursive, sans-serif;
+      color: #333;
+    }
 
-  textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    resize: none;
-    font-size: 16px;
-  }
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      resize: none;
+      font-size: 16px;
+    }
 
-  .preview {
-    margin-top: 15px;
-  }
+    .preview {
+      margin-top: 15px;
+    }
 
-  #fileInput {
-    display: block;
-    margin: 10px 0;
-  }
+    #fileInput {
+      display: block;
+      margin: 10px 0;
+    }
 
-  #imagePreview {
-    display: none;
-    max-width: 25%;
-    border-radius: 10px;
-    margin-top: 10px;
-  }
+    #imagePreview {
+      display: none;
+      max-width: 25%;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
 
-  #postButton {
-    background-color: #ff69b4;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin-top: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+    #commentButton{
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
 
-  #postButton:hover {
-    background-color: #ff1493;
-  }
+    }
+    #postButton {
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #postButton:hover {
+      background-color: #ff1493;
+    }
   </style>
   <body>
     <!-- Navigation Section -->
@@ -176,7 +190,7 @@
       <!-- Left Section of the Navigation Bar -->
       <div class="nav-left">
         <!-- Logo with a link to the homepage -->
-      
+
         <!-- Search box for searching content on the website -->
         <div class="search-box">
           <img src="images/search.png" />
@@ -212,23 +226,27 @@
             </div>
           </div>
           <hr />
-          
+
           <hr />
           <!-- Settings & Privacy Link -->
           <div class="settings-links">
             <img src="images/setting.png" class="settings-icon" />
-            <a href="#">Settings & Privacy <img src="images/arrow.png" width="10px"/></a>
+            <a href="#"
+              >Settings & Privacy <img src="images/arrow.png" width="10px"
+            /></a>
           </div>
-    
+
           <!-- Display & Accessibility Link -->
           <div class="settings-links">
             <img src="images/display.png" class="settings-icon" />
-            <a href="#">Display & Accessibility <img src="images/arrow.png" width="10px"/></a>
+            <a href="#"
+              >Display & Accessibility <img src="images/arrow.png" width="10px"
+            /></a>
           </div>
           <!-- Logout Link -->
           <div class="settings-links">
             <img src="images/logout.png" class="settings-icon" />
-            <a href="#">Logout <img src="images/arrow.png" width="10px"/></a>
+            <a href="#">Logout <img src="images/arrow.png" width="10px" /></a>
           </div>
         </div>
       </div>
@@ -243,68 +261,59 @@
           <a href="#"><img src="images/news.png" />Latest News</a>
           <a href="#"><img src="images/friends.png" />Friends</a>
           <a href="#"><img src="images/group.png" />Group</a>
-        
+
           <a href="#"><img src="images/watch.png" />Watch</a>
           <a href="#">See More</a>
         </div>
-       
       </div>
 
       <!-- Middle Content Section -->
       <div class="main-content">
-       
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="Search posts..." />
+        </div>
 
-<!-- Post Creation Section -->
-<div id="myBtn" class="write-post-container">
-  <!-- User Profile Info -->
-  <div class="user-profile">
-    <img src="images/profile-pic.jpg" alt="Profile Picture" />
-    <div>
-      <p>Shaik-Chapal</p>
-      <small>Public <i class="fa-solid fa-caret-down"></i></small>
-    </div>
-  </div>
-  <!-- Post Input Area -->
-  <div class="post-input-container">
-    <textarea rows="3" placeholder="What's on your mind, Chapal?"></textarea>
-    <div class="add-post-links">
-      <a href="#"><img src="images/photo.png" alt="Photo/Video Icon" /> Photo/Video</a>
-    </div>
-  </div>
-</div>
+        <div class="filter-container">
+          <select id="filterSelect">
+            <option value="">All</option>
+            <option value="author1">Author 1</option>
+            <option value="author2">Author 2</option>
+            <!-- Add more filters as needed -->
+          </select>
+        </div>
 
+        <!-- Post Creation Section -->
+        <div id="myBtn" class="write-post-container">
+          <!-- User Profile Info -->
+          <div class="user-profile">
+            <img src="images/profile-pic.jpg" alt="Profile Picture" />
+            <div>
+              <p>Shaik-Chapal</p>
+              <small>Public <i class="fa-solid fa-caret-down"></i></small>
+            </div>
+          </div>
+          <!-- Post Input Area -->
+          <div class="post-input-container">
+            <textarea
+              rows="3"
+              placeholder="What's on your mind, Chapal?"
+            ></textarea>
+            <div class="add-post-links">
+              <a href="#"
+                ><img src="images/photo.png" alt="Photo/Video Icon" />
+                Photo/Video</a
+              >
+            </div>
+          </div>
+        </div>
 
+        <div id="postsContainer"></div>
 
-
-
-
-<div class="search-container">
-  <input type="text" id="searchInput" placeholder="Search posts...">
-</div>
-
-<div class="filter-container">
-  <select id="filterSelect">
-    <option value="">All</option>
-    <option value="author1">Author 1</option>
-    <option value="author2">Author 2</option>
-    <!-- Add more filters as needed -->
-  </select>
-</div>
-
-<div id="postsContainer"></div>
-
-<div class="pagination-container">
-  <button id="prevPage">Previous</button>
-  <span id="currentPage">1</span>
-  <button id="nextPage">Next</button>
-</div>
-
-
-
-
-
-
-
+        <div class="pagination-container">
+          <button id="prevPage">Previous</button>
+          <span id="currentPage">1</span>
+          <button id="nextPage">Next</button>
+        </div>
 
         <!-- Uploaded Posts Section -->
         <!-- Example Post -->
@@ -339,85 +348,105 @@
             </div>
           </div>
         </div> -->
-
-       
       </div>
 
       <!-- Right Sidebar -->
-      <div class="right-sidebar">
+      <!-- <div class="right-sidebar">
+      </div> -->
         <!-- Events Section -->
-       
-    
-       
 
-
-      </div>
     </div>
 
     <!-- Footer Section -->
     <div class="footer">
       <p>© 2024 Shaik-Chapal</p>
     </div>
-  <!-- The Modal -->
-  <div id="myModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Create Post</h2>
-      <form id="postForm" enctype="multipart/form-data">
-      <textarea type="text" id="postTitle" name="title" placeholder="Title" style="height: 50px;" required></textarea>
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 class="sans-serif">Create Post</h2>
+        <form id="postForm" enctype="multipart/form-data">
+          <textarea
+            type="text"
+            id="postTitle"
+            name="title"
+            placeholder="Title"
+            style="height: 50px"
+            required
+          ></textarea>
 
-        <textarea id="postText" name="description" rows="4" cols="50" placeholder="What's on your mind?" required></textarea>
-        <div class="preview">
-          <input type="file" id="fileInput" name="image" accept="image/*">
-          <img id="imagePreview" src="#" alt="Your Image" style="display: none;">
-        </div>
-        <button type="submit" id="postButton">Post</button>
-      </form>
+          <textarea
+            id="postText"
+            name="description"
+            rows="4"
+            cols="50"
+            placeholder="What's on your mind?"
+            required
+          ></textarea>
+          <div class="preview">
+            <input type="file" id="fileInput" name="image" accept="image/*" />
+            <img
+              id="imagePreview"
+              src="#"
+              alt="Your Image"
+              style="display: none"
+            />
+          </div>
+          <button type="submit" id="postButton">Post</button>
+        </form>
+      </div>
     </div>
-  </div>
 
- <!-- Comment Modal -->
- <div id="commentModal" class="modal">
-  <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Add Comment</h2>
-      <form id="commentForm">
-          <textarea id="commentText" name="comment" placeholder="Add your comment" required></textarea>
+    <!-- Comment Modal -->
+    <div id="commentModal" class="modal">
+      <div class="modal-content">
+        <span class="close comment-modal">&times;</span>
+        <h2  class="sans-serif">Add Comment</h2>
+        <form id="commentForm">
+          <textarea
+            id="commentText"
+            name="comment"
+            placeholder="Add your comment"
+            required
+          ></textarea>
           <button type="submit" id="commentButton">Post Comment</button>
 
-          fetch comment  list when modal click
-      </form>
-  </div>
-</div>
-  <script>
+          fetch comment list when modal click
+        </form>
+      </div>
+    </div>
+    <script>
+      // public/js/scripts.js
+      document.addEventListener("DOMContentLoaded", () => {
+        let currentPage = 1;
 
-// public/js/scripts.js
-document.addEventListener('DOMContentLoaded', () => {
-    let currentPage = 1;
+        const searchInput = document.getElementById("searchInput");
+        const filterSelect = document.getElementById("filterSelect");
+        const postsContainer = document.getElementById("postsContainer");
+        const prevPage = document.getElementById("prevPage");
+        const nextPage = document.getElementById("nextPage");
+        const currentPageDisplay = document.getElementById("currentPage");
+        const commentModal = document.getElementById("commentModal");
+        const closeBtn = document.getElementsByClassName("close")[0];
+        const commentModalClose = document.getElementsByClassName("comment-modal")[0];
+        const commentForm = document.getElementById("commentForm");
+        const commentText = document.getElementById("commentText");
+        let currentPostId = null;
 
-    const searchInput = document.getElementById('searchInput');
-    const filterSelect = document.getElementById('filterSelect');
-    const postsContainer = document.getElementById('postsContainer');
-    const prevPage = document.getElementById('prevPage');
-    const nextPage = document.getElementById('nextPage');
-    const currentPageDisplay = document.getElementById('currentPage');
-    const commentModal = document.getElementById('commentModal');
-    const closeBtn = document.getElementsByClassName('close')[0];
-    const commentForm = document.getElementById('commentForm');
-    const commentText = document.getElementById('commentText');
-    let currentPostId = null;
+        const fetchPosts = async () => {
+          const search = searchInput.value;
+          const filter = filterSelect.value;
 
-    const fetchPosts = async () => {
-        const search = searchInput.value;
-        const filter = filterSelect.value;
+          const response = await fetch(
+            `/api/posts?page=${currentPage}&search=${search}&filter=${filter}`
+          );
+          const posts = await response.json();
 
-        const response = await fetch(`/api/posts?page=${currentPage}&search=${search}&filter=${filter}`);
-        const posts = await response.json();
-
-        postsContainer.innerHTML = '';
-        posts.forEach(post => {
-            const postElement = document.createElement('div');
-            postElement.classList.add('post-container');
+          postsContainer.innerHTML = "";
+          posts.forEach((post) => {
+            const postElement = document.createElement("div");
+            postElement.classList.add("post-container");
 
             postElement.innerHTML = `
                 <div class="post-row">
@@ -433,12 +462,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="post-text">
                     <span>${post.title}</span> ${post.description}
                 </p>
-                ${post.image ? `<img src="${post.image}" class="post-img" />` : ''}
+                ${
+                  post.image
+                    ? `<img src="${post.image}" class="post-img" />`
+                    : ""
+                }
                 <div class="post-row">
                     <div class="activity-icons">
                         <div><img src="images/like-blue.png" /> 75k+</div>
-                        <div class="comment-section" id="commentSection-${post.id}">
-                            <img src="images/comments.png" class="comment-icon" data-post-id="${post.id}" /> 5k+
+                        <div class="comment-section" id="commentSection-${
+                          post.id
+                        }">
+                            <img src="images/comments.png" class="comment-icon" data-post-id="${
+                              post.id
+                            }" /> 5k+
                         </div>
                         <div><img src="images/share.png" /> 950</div>
                     </div>
@@ -452,136 +489,145 @@ document.addEventListener('DOMContentLoaded', () => {
             postsContainer.appendChild(postElement);
 
             fetchComments(post.id);
-        });
+          });
 
-        const commentIcons = document.querySelectorAll('.comment-icon');
-        commentIcons.forEach(icon => {
-            icon.addEventListener('click', (event) => {
-                currentPostId = event.target.dataset.postId;
-                commentModal.style.display = 'block';
+          const commentIcons = document.querySelectorAll(".comment-icon");
+          commentIcons.forEach((icon) => {
+            icon.addEventListener("click", (event) => {
+              currentPostId = event.target.dataset.postId;
+              commentModal.style.display = "block";
             });
-        });
-    };
+          });
+        };
 
-    const fetchComments = async (postId) => {
-        const response = await fetch(`/api/comments/${postId}`);
-        const comments = await response.json();
-        const commentsContainer = document.getElementById(`commentsContainer-${postId}`);
-        
-        commentsContainer.innerHTML = '';
-        comments.forEach(comment => {
-            const commentElement = document.createElement('div');
-            commentElement.classList.add('comment');
+        const fetchComments = async (postId) => {
+          const response = await fetch(`/api/comments/${postId}`);
+          const comments = await response.json();
+          const commentsContainer = document.getElementById(
+            `commentsContainer-${postId}`
+          );
+
+          commentsContainer.innerHTML = "";
+          comments.forEach((comment) => {
+            const commentElement = document.createElement("div");
+            commentElement.classList.add("comment");
             commentElement.innerHTML = `<p>${comment.author}: ${comment.text}</p>`;
             commentsContainer.appendChild(commentElement);
-        });
-    };
+          });
+        };
 
-    searchInput.addEventListener('input', fetchPosts);
-    filterSelect.addEventListener('change', fetchPosts);
-    prevPage.addEventListener('click', () => {
-        if (currentPage > 1) {
+        searchInput.addEventListener("input", fetchPosts);
+        filterSelect.addEventListener("change", fetchPosts);
+        prevPage.addEventListener("click", () => {
+          if (currentPage > 1) {
             currentPage--;
             currentPageDisplay.textContent = currentPage;
             fetchPosts();
-        }
-    });
-    nextPage.addEventListener('click', () => {
-        currentPage++;
-        currentPageDisplay.textContent = currentPage;
-        fetchPosts();
-    });
+          }
+        });
+        nextPage.addEventListener("click", () => {
+          currentPage++;
+          currentPageDisplay.textContent = currentPage;
+          fetchPosts();
+        });
 
-    closeBtn.onclick = function() {
-        commentModal.style.display = 'none';
-    };
+        closeBtn.onclick = function () {
+          commentModal.style.display = "none";
+          modal.style.display = "none";
+        };
+        commentModalClose.onclick = function () {
+          commentModal.style.display = "none";
+          // modal.style.display = "none";
+        };
 
-    window.onclick = function(event) {
-        if (event.target == commentModal) {
-            commentModal.style.display = 'none';
-        }
-    };
+        window.onclick = function (event) {
+          if (event.target == commentModal) {
+          // alert(2);
+            commentModal.style.display = "none";
+          }
+        };
 
-    commentForm.onsubmit = async function(event) {
-        event.preventDefault();
-        const formData = new FormData();
-        formData.append('postId', currentPostId);
-        formData.append('text', commentText.value);
+        commentForm.onsubmit = async function (event) {
+          event.preventDefault();
+          const formData = new FormData();
+          formData.append("postId", currentPostId);
+          formData.append("text", commentText.value);
 
-        try {
+          try {
             const response = await fetch(`/api/comments`, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
+              method: "POST",
+              body: formData,
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
             });
             const data = await response.json();
             console.log(data);
-            commentModal.style.display = 'none';
+            commentModal.style.display = "none";
             fetchComments(currentPostId);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
-    fetchPosts();
-});
-
-
-    const modal = document.getElementById('myModal');
-    const btn = document.getElementById('myBtn');
-    const span = document.getElementsByClassName('close')[0];
-    const fileInput = document.getElementById('fileInput');
-    const imagePreview = document.getElementById('imagePreview');
-    const postForm = document.getElementById('postForm');
-
-    btn.onclick = function() {
-      modal.style.display = 'block';
-    }
-
-    span.onclick = function() {
-      modal.style.display = 'none';
-    }
-
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = 'none';
-      }
-    }
-
-    fileInput.onchange = function(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          imagePreview.src = e.target.result;
-          imagePreview.style.display = 'block';
-        }
-        reader.readAsDataURL(file);
-      } else {
-        imagePreview.style.display = 'none';
-      }
-    }
-
-    postForm.onsubmit = async function(event) {
-      event.preventDefault();
-      const formData = new FormData(postForm);
-      try {
-        const response = await fetch('/api/posts', {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          } catch (error) {
+            console.error("Error:", error);
           }
-        });
-        const data = await response.json();
-        console.log(data);
-        modal.style.display = 'none';
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    }
-  </script>
-</body>
+        };
+
+        fetchPosts();
+      });
+
+      const modal = document.getElementById("myModal");
+      const btn = document.getElementById("myBtn");
+      const span = document.getElementsByClassName("close")[0];
+      const fileInput = document.getElementById("fileInput");
+      const imagePreview = document.getElementById("imagePreview");
+      const postForm = document.getElementById("postForm");
+
+      btn.onclick = function () {
+        modal.style.display = "block";
+      };
+
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      window.onclick = function (event) {
+        // alert(1);
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+
+      fileInput.onchange = function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        } else {
+          imagePreview.style.display = "none";
+        }
+      };
+
+      postForm.onsubmit = async function (event) {
+        event.preventDefault();
+        const formData = new FormData(postForm);
+        try {
+          const response = await fetch("/api/posts", {
+            method: "POST",
+            body: formData,
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
+          const data = await response.json();
+          console.log(data);
+          modal.style.display = "none";
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
+
+    </script>
+  </body>
 </html>

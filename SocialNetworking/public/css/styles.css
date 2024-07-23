@@ -50,6 +50,9 @@
   padding-left: 26px;
   background: var(--color5);
 }
+.sans-serif{
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
 
 body {
   background: var(--color1);
@@ -157,7 +160,7 @@ nav {
   color: var(--color5);
 }
 .main-content {
-  flex-basis: 47%;
+  flex-basis: 74%;
 }
 .imp-links a,
 .shortcut-links a {
