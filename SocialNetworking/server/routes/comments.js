@@ -7,14 +7,15 @@ const { authenticateToken } = require('../middleware/auth'); // Ensure this path
 const router = express.Router();
 
 // Route to fetch a comment by ID
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
+// Route to fetch comments by post ID
+router.get('/:postId', async (req, res) => {
+  const { postId } = req.params;
   try {
-    const result = await pool.query('SELECT * FROM comments WHERE id = $1', [id]);
+    const result = await pool.query('SELECT * FROM commentsreview WHERE post_id = $1', [postId]);
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Comment not found' });
+      return res.status(404).json({ error: 'No comments found for this post' });
     }
-    res.json(result.rows[0]);
+    res.json(result.rows); // Return all matching rows
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -25,24 +26,29 @@ router.get('/:id', async (req, res) => {
 
 // Route to add a new comment
 router.post('/', authenticateToken, async (req, res) => {
-  const { postId, text } = req.body;
-  const author = req.user ? req.user.userId : null; // Ensure req.user is correctly set
-
+  const { postId, commentdetails  } = req.body;
+ 
+  const author = req.user ? req.user.id : null; // Ensure req.user is correctly set
+ 
   if (!author) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
-
+ // Validate that commentdescription is not null or empty
+ if (!commentdetails) {
+  return res.status(400).json({ error: 'Comment description cannot be empty'+commentdetails });
+}
   try {
     const result = await pool.query(
-      'INSERT INTO comments (post_id, text, author, date) VALUES ($1, $2, $3, NOW()) RETURNING *',
-      [postId, text, author]
+      'INSERT INTO commentsreview  (commentdetails , author,post_id,  date) VALUES ($1, $2, $3, NOW()) RETURNING *',
+      [ commentdetails , author,postId]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+   
+    console.error('Database error:', err);
+    res.status(501).json({ error: err.message });
   }
 });
-
 
 // Route to edit an existing comment
 router.put('/:id', async (req, res) => {

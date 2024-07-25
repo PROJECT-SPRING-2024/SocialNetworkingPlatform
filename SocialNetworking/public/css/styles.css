@@ -419,7 +419,9 @@ nav {
   text-decoration: none;
 }
 .post-img {
-  width: 100%;
+  width: 50%;
+  height: 50%;
+  object-fit: cover;
   border-radius: 10px;
   margin-bottom: 5px;
   cursor: pointer;

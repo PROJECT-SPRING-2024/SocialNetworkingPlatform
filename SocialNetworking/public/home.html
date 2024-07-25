@@ -394,8 +394,8 @@
             required
           ></textarea>
           <button type="submit" id="commentButton">Post Comment</button>
-
-          fetch comment list when modal click
+          <div id="commentsContainer"></div>
+        
         </form>
       </div>
     </div>
@@ -463,7 +463,7 @@
             <div class="comment-section" id="commentSection-${post.post_id}">
               <img src="images/comments.png" class="comment-icon" data-post-id="${post.post_id}" /> ${post.comments_count}
             </div>
-            <div><img src="images/share.png" /> 950</div>
+            <div><img src="images/share.png" /> 0</div>
           </div>
           <div class="post-profile-icon">
             <img src="${userImage}" alt="User Picture" />
@@ -475,7 +475,7 @@
       postsContainer.appendChild(postElement);
 
       // Fetch comments for each post
-      fetchComments(post.id);
+     // fetchComments(post.post_id);
     });
 
      // Add event listeners for like icons
@@ -494,7 +494,8 @@
     const commentIcons = document.querySelectorAll(".comment-icon");
     commentIcons.forEach((icon) => {
       icon.addEventListener("click", (event) => {
-        const currentPostId = event.target.dataset.postId;
+        currentPostId = event.target.dataset.postId;
+        fetchComments(currentPostId);
         const commentModal = document.getElementById('commentModal');
         commentModal.style.display = "block";
       });
@@ -506,26 +507,44 @@
   }
 };
 
+const fetchComments = async (postId) => {
+  try {
+    const response = await fetch(`/api/comments/${postId}`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch comments');
+    }
+    
+    const comments = await response.json();
+    console.log('Comments:', comments);
+    
+    const commentsContainer = document.getElementById('commentsContainer');
+    
+    if (!commentsContainer) {
+      console.error('No element found with ID commentsContainer');
+      return;
+    }
+    
+    commentsContainer.innerHTML = ""; // Clear old comments
 
-
-
-        const fetchComments = async (postId) => {
-          const response = await fetch(`/api/comments/${postId}`);
-          const comments = await response.json();
-          const commentsContainer = document.getElementById(
-            `commentsContainer-${postId}`
-          );
-
-          commentsContainer.innerHTML = "";
-          comments.forEach((comment) => {
-            const commentElement = document.createElement("div");
-            commentElement.classList.add("comment");
-            commentElement.innerHTML = `<p>${comment.author}: ${comment.text}</p>`;
-            commentsContainer.appendChild(commentElement);
-          });
-        };
-
-       
+    if (Array.isArray(comments)) {
+      comments.forEach((comment) => {
+        const commentElement = document.createElement("div");
+        commentElement.classList.add("comment");
+        commentElement.innerHTML = `<p>${comment.author}: ${comment.commentdetails}</p>`;
+        commentsContainer.appendChild(commentElement);
+      });
+    } else {
+      const commentElement = document.createElement("div");
+      commentElement.classList.add("comment");
+      commentElement.innerHTML = `<p>${comments.author}: ${comments.commentdetails}</p>`;
+      commentsContainer.appendChild(commentElement);
+    }
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+  }
+};
+ 
 
 
         closeBtn.onclick = function () {
@@ -545,27 +564,48 @@
         };
 
         commentForm.onsubmit = async function (event) {
-          event.preventDefault();
-          const formData = new FormData();
-          formData.append("postId", currentPostId);
-          formData.append("text", commentText.value);
+  event.preventDefault();
+  
+  // Ensure commentText and currentPostId are defined
+  const commentText = document.getElementById('commentText'); // Make sure this ID matches your input field
+  if (!commentText || !currentPostId) {
+    console.error('Required elements or values are missing');
+    return;
+  }
 
-          try {
-            const response = await fetch(`/api/comments`, {
-              method: "POST",
-              body: formData,
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            });
-            const data = await response.json();
-            console.log(data);
-            commentModal.style.display = "none";
-            fetchComments(currentPostId);
-          } catch (error) {
-            console.error("Error:", error);
-          }
-        };
+  const data = {
+    postId: currentPostId,
+    commentdetails: commentText.value
+  };
+
+  console.log("data:", data);
+
+  try {
+    const response = await fetch(`/api/comments`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      },
+      body: JSON.stringify(data)
+    });
+
+    console.log("comments:");
+    console.log(response);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error);
+    }
+
+    const responseData = await response.json();
+    console.log(responseData);
+   
+    fetchComments(currentPostId);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
 
         fetchPosts();
       });
