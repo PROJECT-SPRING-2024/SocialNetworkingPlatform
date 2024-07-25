@@ -48,3 +48,8 @@ To get started with the Social Networking Platform, follow these steps:
 ![Screenshot (3)](https://github.com/user-attachments/assets/5b124a9b-364f-417c-88c9-740a3a58d7d6)
 ![Screenshot (1)](https://github.com/user-attachments/assets/b9304ea1-8076-4b31-a255-f92193df2cab)
 ![Screenshot (2)](https://github.com/user-attachments/assets/4aa61b02-1bba-41d4-a7fc-ae51db549199)
+![Screenshot (272)](https://github.com/user-attachments/assets/9a66ac96-dde5-4a23-b899-9f84e6201ea3)
+![Screenshot (271)](https://github.com/user-attachments/assets/15b69b7c-0482-47d3-ac18-b9985db829a9)
+
+
+
