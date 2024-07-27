@@ -431,7 +431,14 @@
 
         const fetchPosts = async () => {
   try {
-    const response = await fetch(`/api/posts`);
+    const response = await fetch('/api/posts', {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem("token")}`
+      }
+    });
+
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -447,9 +454,8 @@
       postElement.classList.add("post-container");
 
       const userImage = post.author_profile_image || "images/profile-pic.jpg";
-      const likeIcon = post.likes_count > 0 ? "images/like-blue.png" : "images/like.png";
+      const likeIcon = post.user_liked_post ? "images/like-blue.png" : "images/like.png";
       const likeCountText = post.likes_count > 0 ? post.likes_count : "0";
-      
 
       postElement.innerHTML = `
         <div class="post-row">
@@ -460,17 +466,17 @@
               <span>${new Date(post.post_date).toLocaleString()}</span>
             </div>
           </div>
-          <a href="#"><i class="fa-solid fa-ellipsis-v"></i></a>
+          ${post.user_has_post ? '<a href="#"><i class="fa-solid fa-ellipsis-v"></i></a>' : ''}
         </div>
         <p class="post-text">
           <span>${post.title}</span> ${post.description}
         </p>
-        ${post.image ? `<img src="${post.image}" class="post-img" />` : ""}
+        ${post.image ? `<img src="${post.image}" class="post-img" />` : ''}
         <div class="post-row">
           <div class="activity-icons">
-           <div class="like-section" data-post-id="${post.post_id}" data-liked="${post.likes_count > 0}">
-              <img src="${likeIcon}" class="like-icon" />   
-               <span class="like-count">${likeCountText}</span>
+            <div class="like-section" data-post-id="${post.post_id}" data-liked="${post.user_liked_post}">
+              <img src="${likeIcon}" class="like-icon" />
+              <span class="like-count">${likeCountText}</span>
             </div>
             <div class="comment-section" id="commentSection-${post.post_id}">
               <img src="images/comments.png" class="comment-icon" data-post-id="${post.post_id}" /> ${post.comments_count}
@@ -485,67 +491,61 @@
       `;
 
       postsContainer.appendChild(postElement);
-
-
     });
 
-     // Add event listeners for like icons
-     document.querySelectorAll(".like-section").forEach((section) => {
-  section.addEventListener("click", async (event) => {
-    const likeIcon = section.querySelector(".like-icon");
-    const isLiked = section.getAttribute("data-liked") === "true";
-    const newLikeIcon = isLiked ? "images/like.png" : "images/like-blue.png";
-    likeIcon.src = newLikeIcon;
-    section.setAttribute("data-liked", !isLiked);
-    
-    const likeCountSpan = section.querySelector(".like-count");
-    const likeCount = parseInt(likeCountSpan.textContent, 10);
-    likeCountSpan.textContent = isLiked ? likeCount - 1 : likeCount + 1;
-    
-    const currentPostId = section.getAttribute("data-post-id");
-    console.log(currentPostId);
-    
-    try {
-  const response = await fetch('/api/posts/likes', {
-    method: isLiked ? "DELETE" : "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${localStorage.getItem("token")}`,
-    },
-    body: JSON.stringify({ postId: currentPostId }), // Correctly pass the postId here
-  });
+    // Add event listeners for like icons
+    document.querySelectorAll(".like-section").forEach((section) => {
+      section.addEventListener("click", async (event) => {
+        const likeIcon = section.querySelector(".like-icon");
+        const isLiked = section.getAttribute("data-liked") === "true";
+        const newLikeIcon = isLiked ? "images/like.png" : "images/like-blue.png";
+        likeIcon.src = newLikeIcon;
+        section.setAttribute("data-liked", !isLiked);
 
-  if (!response.ok) {
-    throw new Error("Failed to update like");
-  }
-} catch (error) {
-  console.error("Error:", error);
-  // Revert the UI changes if the API call fails
-  likeIcon.src = isLiked ? "images/like-blue.png" : "images/like.png";
-  section.setAttribute("data-liked", isLiked);
-  likeCountSpan.textContent = isLiked ? likeCount : likeCount - 1;
-}
+        const likeCountSpan = section.querySelector(".like-count");
+        const likeCount = parseInt(likeCountSpan.textContent, 10);
+        likeCountSpan.textContent = isLiked ? likeCount - 1 : likeCount + 1;
 
-  });
-});
+        const currentPostId = section.getAttribute("data-post-id");
+        console.log(currentPostId);
 
+        try {
+          const response = await fetch('/api/posts/likes', {
+            method: isLiked ? "DELETE" : "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ postId: currentPostId }), // Correctly pass the postId here
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to update like");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          // Revert the UI changes if the API call fails
+          likeIcon.src = isLiked ? "images/like-blue.png" : "images/like.png";
+          section.setAttribute("data-liked", isLiked);
+          likeCountSpan.textContent = isLiked ? likeCount : likeCount - 1;
+        }
+      });
+    });
 
     const commentIcons = document.querySelectorAll(".comment-icon");
     commentIcons.forEach((icon) => {
       icon.addEventListener("click", (event) => {
-        currentPostId = event.target.dataset.postId;
+        const currentPostId = event.target.dataset.postId;
         console.log(currentPostId);
         const commentsContainer = document.getElementById('commentsContainer');
-    
-    // Clear old comments
-    commentsContainer.innerHTML = "";
+
+        // Clear old comments
+        commentsContainer.innerHTML = "";
         fetchComments(currentPostId);
         const commentModal = document.getElementById('commentModal');
         commentModal.style.display = "block";
       });
     });
-
-
   } catch (error) {
     console.error('Failed to fetch posts:', error);
   }

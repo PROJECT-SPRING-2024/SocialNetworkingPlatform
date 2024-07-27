@@ -20,7 +20,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Get all posts
-router.get('/', async (req, res) => {
+// Get all posts with additional fields
+router.get('/', authenticateToken, async (req, res) => {
+  const userId = req.user ? req.user.id : null;// Assuming authenticateToken middleware sets req.user
   try {
     const query = `
       SELECT
@@ -33,7 +35,9 @@ router.get('/', async (req, res) => {
         u.email AS author_email,
         u.profile_image AS author_profile_image,
         COALESCE(l.likes_count, 0) AS likes_count,
-        COALESCE(c.comments_count, 0) AS comments_count
+        COALESCE(c.comments_count, 0) AS comments_count,
+        CASE WHEN p.author = $1 THEN true ELSE false END AS user_has_post,
+        CASE WHEN ul.user_id IS NOT NULL THEN true ELSE false END AS user_liked_post
       FROM
         posts p
         JOIN users u ON p.author = u.id
@@ -54,9 +58,17 @@ router.get('/', async (req, res) => {
             commentsreview 
           GROUP BY
             post_id
-        ) c ON p.id = c.post_id;
+        ) c ON p.id = c.post_id
+        LEFT JOIN (
+          SELECT
+            post_id,
+            user_id
+          FROM
+            likes
+          WHERE user_id = $1
+        ) ul ON p.id = ul.post_id;
     `;
-    const result = await pool.query(query);
+    const result = await pool.query(query, [userId]);
     console.log('Query Result:', result.rows); // Log the query result
     res.json(result.rows);
   } catch (err) {
