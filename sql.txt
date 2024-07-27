@@ -32,9 +32,13 @@ CREATE TABLE posts (
 author: Foreign key referencing the user who created the post.
 image: Path to the post image.
 
-CREATE TABLE comments (
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE commentsreview TO schapal;
+commentsreview_id_seq
+social=# GRANT USAGE, SELECT ON SEQUENCE commentsreview_id_seq TO schapal;
+
+CREATE TABLE commentsreview (
   id SERIAL PRIMARY KEY,
-  text TEXT NOT NULL,
+  commentdetails TEXT NOT NULL,
   author INTEGER REFERENCES users(id),
   post_id INTEGER REFERENCES posts(id),
   date TIMESTAMP DEFAULT CURRENT_TIMESTAMP

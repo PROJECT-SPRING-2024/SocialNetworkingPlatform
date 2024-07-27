@@ -51,7 +51,7 @@ router.get('/', async (req, res) => {
             post_id,
             COUNT(*) AS comments_count
           FROM
-            comments
+            commentsreview 
           GROUP BY
             post_id
         ) c ON p.id = c.post_id;
@@ -64,6 +64,67 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// Add like
+router.post('/likes', authenticateToken, async (req, res) => {
+  console.log('POST /likes called');
+  const { postId } = req.body;
+  const userId = req.user ? req.user.id : null; 
+
+  console.log(`postId: ${postId}, userId: ${userId}`);
+
+  if (!postId) {
+    console.log('postId is required');
+    return res.status(400).json({ error: 'postId is required' });
+  }
+
+  try {
+    const queryText = 'INSERT INTO likes (user_id, post_id) VALUES ($1, $2) ON CONFLICT (user_id, post_id) DO NOTHING';
+    console.log(`Executing query: ${queryText}`);
+    await pool.query(queryText, [userId, postId]);
+
+    console.log('Like added');
+    res.status(200).json({ message: 'Like added' });
+  } catch (err) {
+    console.error('Error adding like:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Remove like
+router.delete('/likes', authenticateToken, async (req, res) => {
+  console.log('DELETE /likes called');
+  const { postId } = req.body;
+  const userId = req.user ? req.user.id : null; 
+
+  console.log(`postId: ${postId}, userId: ${userId}`);
+
+  if (!postId) {
+    console.log('postId is required');
+    return res.status(400).json({ error: 'postId is required' });
+  }
+
+  try {
+    const queryText = 'DELETE FROM likes WHERE user_id = $1 AND post_id = $2 RETURNING *';
+    console.log(`Executing query: ${queryText}`);
+    const result = await pool.query(queryText, [userId, postId]);
+
+    console.log(`Query result: ${JSON.stringify(result)}`);
+
+    if (result.rowCount === 0) {
+      console.log('Like not found');
+      return res.status(404).json({ error: 'Like not found' });
+    }
+
+    console.log('Like removed');
+    res.status(200).json({ message: 'Like removed' });
+  } catch (err) {
+    console.error('Error removing like:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 
 // Create a post
 router.post('/', authenticateToken, upload.single('image'), async (req, res) => {
@@ -140,7 +201,7 @@ router.get('/user/:id', async (req, res) => {
 
   try {
     const query = `
-      SELECT * FROM users WHERE id = $1`;
+      SELECT * FROM users WHERE id = $1 ORDER BY date ASC`;
     const result = await pool.query(query, [userId]);
 
     if (result.rows.length === 0) {

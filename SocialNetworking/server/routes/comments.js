@@ -8,10 +8,20 @@ const router = express.Router();
 
 // Route to fetch a comment by ID
 // Route to fetch comments by post ID
-router.get('/:postId', async (req, res) => {
+// Route to fetch comments by post ID
+router.get('/:postId', authenticateToken, async (req, res) => {
   const { postId } = req.params;
+  const userId = req.user ? req.user.id : null; // Get logged-in user ID
+
   try {
-    const result = await pool.query('SELECT * FROM commentsreview WHERE post_id = $1', [postId]);
+    const result = await pool.query(`
+      SELECT c.id, c.commentdetails, c.author, c.date, u.name, u.profile_image, 
+             CASE WHEN c.author = $2 THEN true ELSE false END as is_author
+      FROM commentsreview c
+      JOIN users u ON c.author = u.id
+      WHERE c.post_id = $1 ORDER BY c.date ASC
+    `, [postId, userId]);
+
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'No comments found for this post' });
     }
