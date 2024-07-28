@@ -20,7 +20,17 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Get all posts
-// Get all posts with additional fields
+/*
+This route retrieves all posts.
+It requires user authentication (authenticateToken).
+It retrieves additional data like author details, like count,
+ comments count, and user-specific information (has post, liked the post).
+It uses a complex SQL query with joins and subqueries to achieve this.
+The query result is logged and then sent back as a JSON response.
+Error handling logs errors and sends appropriate error responses.
+
+
+*/
 router.get('/', authenticateToken, async (req, res) => {
   const userId = req.user ? req.user.id : null;// Assuming authenticateToken middleware sets req.user
   try {
