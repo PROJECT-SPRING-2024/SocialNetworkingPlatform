@@ -7,7 +7,9 @@
 
     <!-- Favicon for the website -->
     <link rel="icon" href="/images/favicon.png" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  
     <!-- Fontawesome Icons for using various icons throughout the page -->
     <script
       src="https://kit.fontawesome.com/7433d3320f.js"
@@ -126,7 +128,7 @@
       font-family: "Comic Sans MS", cursive, sans-serif;
       color: #333;
     }
-
+    .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
     textarea {
       width: 100%;
       padding: 10px;
@@ -175,6 +177,20 @@
       cursor: pointer;
 
     }
+    .button-style {
+  background-color: #ff69b4;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-top: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
     #postButton {
       background-color: #ff69b4;
       color: white;
@@ -409,7 +425,27 @@
         </form>
       </div>
     </div>
+
+    <!-- optionsModal Modal -->
+    <div id="optionsModal" class="modal">
+      <div class="modal-content">
+        <span class="close comment-modal">&times;</span>
+        <h2  class="sans-serif">Option</h2>
+        <button type="submit" id="optionsModalEditButton" class="button-style">Edit</button>
+        <button type="submit" id="optionsModalDeleteButton" class="button-style">Delete</button>
+     
+       
+      </div>
+    </div>
+
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script src="js/scripts.js"></script>
+
+
     <script>
       // public/js/scripts.js
 // Settings Menu Toggle
@@ -466,8 +502,9 @@
               <span>${new Date(post.post_date).toLocaleString()}</span>
             </div>
           </div>
-          ${post.user_has_post ? '<a href="#"><i class="fa-solid fa-ellipsis-v"></i></a>' : ''}
-        </div>
+    ${post.user_has_post ? '<a href="#" class="option-icon" data-post-id="' + post.post_id + '"><i class="fa-solid fa-ellipsis-v"></i></a>' : ''}
+            </div>
+        
         <p class="post-text">
           <span>${post.title}</span> ${post.description}
         </p>
@@ -493,6 +530,18 @@
       postsContainer.appendChild(postElement);
     });
 
+   // Add event listeners after posts are rendered
+   const optionIcons = document.querySelectorAll(".option-icon");
+        optionIcons.forEach((icon) => {
+          icon.addEventListener("click", (event) => {
+            event.preventDefault();
+            const currentPostId = event.target.closest('.option-icon').dataset.postId;
+            console.log(currentPostId);
+            
+            const optionModal = document.getElementById('optionsModal');
+            optionModal.style.display = "block";
+          });
+        });
     // Add event listeners for like icons
     document.querySelectorAll(".like-section").forEach((section) => {
       section.addEventListener("click", async (event) => {
@@ -611,6 +660,8 @@ const fetchComments = async (postId) => {
         closeBtn.onclick = function () {
           commentModal.style.display = "none";
           modal.style.display = "none";
+          const optionModal = document.getElementById('optionsModal');
+          optionModal.style.display = "none";
         };
         commentModalClose.onclick = function () {
           commentModal.style.display = "none";
@@ -677,10 +728,14 @@ const fetchComments = async (postId) => {
       const fileInput = document.getElementById("fileInput");
       const imagePreview = document.getElementById("imagePreview");
       const postForm = document.getElementById("postForm");
+   
+
+
 
       btn.onclick = function () {
         modal.style.display = "block";
       };
+
 
       span.onclick = function () {
         modal.style.display = "none";
@@ -691,6 +746,7 @@ const fetchComments = async (postId) => {
         if (event.target == modal) {
           modal.style.display = "none";
         }
+       
       };
 
       fileInput.onchange = function (event) {
@@ -726,6 +782,7 @@ const fetchComments = async (postId) => {
         }
       };
 
+   
 
 
     </script>
