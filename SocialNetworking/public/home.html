@@ -430,7 +430,7 @@
     <!-- optionsModal Modal -->
     <div id="optionsModal" class="modal">
       <div class="modal-content">
-        <span class="close comment-modal">&times;</span>
+        <span  id="optionsModalClose" class="close comment-modal">&times;</span>
         <h2  class="sans-serif">Option</h2>
         <button type="submit" id="optionsModalEditButton" class="button-style">Edit</button>
         <button type="submit" id="optionsModalDeleteButton" class="button-style">Delete</button>
@@ -586,6 +586,7 @@
     commentIcons.forEach((icon) => {
       icon.addEventListener("click", (event) => {
         const currentPostId = event.target.dataset.postId;
+        commentForm.dataset.postId = currentPostId;
         console.log(currentPostId);
         const commentsContainer = document.getElementById('commentsContainer');
 
@@ -609,9 +610,11 @@ const fetchComments = async (postId) => {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     });
-    
+    console.log("err comment");
+    console.log(postId);
     if (!response.ok) {
-      throw new Error('Failed to fetch comments');
+      //window.location.href = `${window.location.origin}/login`;
+      throw new Error('Network response was not ok');
     }
     
     const comments = await response.json();
@@ -678,14 +681,13 @@ const fetchComments = async (postId) => {
 
         commentForm.onsubmit = async function (event) {
   event.preventDefault();
-  
-  // Ensure commentText and currentPostId are defined
-  const commentText = document.getElementById('commentText'); // Make sure this ID matches your input field
-  if (!commentText || !currentPostId) {
-    console.error('Required elements or values are missing');
-    return;
-  }
-
+  const currentPostId = commentForm.dataset.postId;
+    if (!commentText.value || !currentPostId) {
+      console.error('Required elements or values are missing');
+      console.error(currentPostId);
+      console.error(commentText.value);
+      return;
+    }
   const data = {
     postId: currentPostId,
     commentdetails: commentText.value
@@ -707,13 +709,13 @@ const fetchComments = async (postId) => {
     console.log(response);
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error);
+      window.location.href = `${window.location.origin}/login`;
+      throw new Error('Network response was not ok');
     }
 
     const responseData = await response.json();
     console.log(responseData);
-   
+    commentText.value = "";
     fetchComments(currentPostId);
   } catch (error) {
     console.error("Error:", error);
@@ -730,7 +732,42 @@ const fetchComments = async (postId) => {
       const imagePreview = document.getElementById("imagePreview");
       const postForm = document.getElementById("postForm");
    
-      
+      const optionsModal = document.getElementById("optionsModal");
+  const optionsModalClose = document.getElementById("optionsModalClose");
+  const optionsModalEditButton = document.getElementById("optionsModalEditButton");
+  const optionsModalDeleteButton = document.getElementById("optionsModalDeleteButton");
+
+  // Function to open the modal
+  const openModal = () => {
+    optionsModal.style.display = "block";
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    optionsModal.style.display = "none";
+  };
+
+  // Close modal when the close button is clicked
+  optionsModalClose.addEventListener("click", closeModal);
+
+  // Close modal when clicking outside the modal content
+  window.addEventListener("click", (event) => {
+    if (event.target === optionsModal) {
+      closeModal();
+    }
+  });
+
+  // Add event listeners to buttons inside the modal
+  optionsModalEditButton.addEventListener("click", () => {
+    console.log("Edit button clicked");
+    closeModal();
+  });
+
+  optionsModalDeleteButton.addEventListener("click", () => {
+    console.log("Delete button clicked");
+    closeModal();
+  });
+
       btn.onclick = function () {
         modal.style.display = "block";
       };
@@ -782,6 +819,10 @@ const fetchComments = async (postId) => {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           });
+          if (!response.ok) {
+      window.location.href = `${window.location.origin}/login`;
+      throw new Error('Network response was not ok');
+    }
           const data = await response.json();
           console.log(data);
           modal.style.display = "none";
