@@ -118,6 +118,8 @@
     <!-- Toastify JS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script>
+
+
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const form = event.target;
@@ -141,7 +143,7 @@
                             
                 Toastify({
                     text: "Login successful!",
-                    duration: 3000,
+                    duration: 1000,
                     close: true,
                     gravity: "top", 
                     position: "right", 
@@ -149,11 +151,11 @@
                 }).showToast();
                 setTimeout(() => {
                     window.location.href = '/home';
-                }, 3000);
+                }, 1000);
             } else {
                 Toastify({
                     text: result.error,
-                    duration: 3000,
+                    duration: 1000,
                     close: true,
                     gravity: "top", 
                     position: "right", 

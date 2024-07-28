@@ -271,7 +271,8 @@
           <!-- Logout Link -->
           <div class="settings-links">
             <img src="images/logout.png" class="settings-icon" />
-            <a href="#">Logout <img src="images/arrow.png" width="10px" /></a>
+            <button id="logoutBtn">Logout <img src="images/arrow.png" width="10px"></button>
+
           </div>
         </div>
       </div>
@@ -441,20 +442,14 @@
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script src="js/scripts.js"></script>
-
-
     <script>
-      // public/js/scripts.js
-// Settings Menu Toggle
+
 
       document.addEventListener("DOMContentLoaded", () => {
         let currentPage = 1;
-
-       
-       
         const postsContainer = document.getElementById("postsContainer");
         
         const currentPageDisplay = document.getElementById("currentPage");
@@ -474,8 +469,13 @@
         'Authorization': `Bearer ${localStorage.getItem("token")}`
       }
     });
-
+    if (response.status === 401) {
+        // Redirect to login if not authorized
+        window.location.href = `${window.location.origin}/login`;
+        throw new Error('author response was not ok');
+      }
     if (!response.ok) {
+      window.location.href = `${window.location.origin}/login`;
       throw new Error('Network response was not ok');
     }
     const posts = await response.json();
@@ -569,8 +569,9 @@
           });
 
           if (!response.ok) {
-            throw new Error("Failed to update like");
-          }
+      window.location.href = `${window.location.origin}/login`;
+      throw new Error('Network response was not ok');
+    }
         } catch (error) {
           console.error("Error:", error);
           // Revert the UI changes if the API call fails
@@ -729,9 +730,7 @@ const fetchComments = async (postId) => {
       const imagePreview = document.getElementById("imagePreview");
       const postForm = document.getElementById("postForm");
    
-
-
-
+      
       btn.onclick = function () {
         modal.style.display = "block";
       };
@@ -763,6 +762,15 @@ const fetchComments = async (postId) => {
         }
       };
 
+      logoutBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    logout();
+  });
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    window.location.href = `${window.location.origin}/login`;
+  };
       postForm.onsubmit = async function (event) {
         event.preventDefault();
         const formData = new FormData(postForm);
@@ -781,10 +789,6 @@ const fetchComments = async (postId) => {
           console.error("Error:", error);
         }
       };
-
-   
-
-
     </script>
   </body>
 </html>
