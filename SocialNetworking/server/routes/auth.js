@@ -4,15 +4,8 @@ const pool = require('../../db'); // Import the pool instance from db.js
 const { hashPassword, verifyPassword, generateToken } = require('../middleware/auth');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const { sendPasswordResetEmail } = require('../middleware/mailer');
 
-// Nodemailer setup
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'disaha2833@gmail.com',
-    pass: 'ycth lrxe olws qrhh'
-  }
-});
 // Route to handle user registration
 router.post('/signup', async (req, res) => {
   const { email, password, name } = req.body;
@@ -66,7 +59,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Route to request a password reset
+// Request password reset
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
 
@@ -79,37 +72,32 @@ router.post('/forgot-password', async (req, res) => {
     }
 
     const token = crypto.randomBytes(20).toString('hex');
-    const resetUrl = `http://${req.headers.host}/reset-password/${token}`;
+    const tokenExpiry = Date.now() + 3600000; // 1 hour
 
-    // Save token and expiry to the database
-    await pool.query('UPDATE users SET reset_token = $1, reset_token_expiry = $2 WHERE email = $3', [token, Date.now() + 3600000, email]); // Token expires in 1 hour
+    await pool.query(
+      'UPDATE users SET reset_password_token = $1, reset_password_expires = $2 WHERE email = $3',
+      [token, tokenExpiry, email]
+    );
 
-    const mailOptions = {
-      from: 'disaha2833@gmail.com',
-      to: user.email,
-      subject: 'Password Reset',
-      text: `You requested a password reset. Please click on the link below to reset your password:\n\n${resetUrl}`
-    };
+    await sendPasswordResetEmail(email, token);
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        return res.status(500).json({ error: 'Error sending email' });
-      }
-      res.status(200).json({ message: 'Password recovery email sent' });
-    });
+    res.status(200).json({ message: 'Password reset email sent' });
   } catch (err) {
     console.error('Error requesting password reset:', err.message);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// Route to reset the password
+// Reset password
 router.post('/reset-password/:token', async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
 
   try {
-    const result = await pool.query('SELECT * FROM users WHERE reset_token = $1 AND reset_token_expiry > $2', [token, Date.now()]);
+    const result = await pool.query(
+      'SELECT * FROM users WHERE reset_password_token = $1 AND reset_password_expires > $2',
+      [token, Date.now()]
+    );
     const user = result.rows[0];
 
     if (!user) {
@@ -117,7 +105,11 @@ router.post('/reset-password/:token', async (req, res) => {
     }
 
     const hashedPassword = await hashPassword(password);
-    await pool.query('UPDATE users SET password = $1, reset_token = NULL, reset_token_expiry = NULL WHERE email = $2', [hashedPassword, user.email]);
+
+    await pool.query(
+      'UPDATE users SET password = $1, reset_password_token = NULL, reset_password_expires = NULL WHERE id = $2',
+      [hashedPassword, user.id]
+    );
 
     res.status(200).json({ message: 'Password reset successful' });
   } catch (err) {
@@ -125,5 +117,6 @@ router.post('/reset-password/:token', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 module.exports = router;

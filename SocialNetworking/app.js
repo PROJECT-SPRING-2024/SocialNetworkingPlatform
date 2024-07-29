@@ -45,6 +45,10 @@ app.get('/forgot-pass', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'forgot.html'));
 });
 
+app.get('/reset-password', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'reset.html'));
+});
+
 /*
 const authRoutes = require('./server/routes/auth');: Imports routes for authentication functionalities from a separate file (auth.js likely).
 Likewise, similar imports are done for postRoutes and commentsRoutes.

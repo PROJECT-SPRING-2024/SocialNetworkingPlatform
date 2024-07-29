@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #main_con {
+            background-color: #fff;
+            width: 400px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .img_logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .img_logo img {
+            width: 150px;
+        }
+        .para_1 {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .input_user {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #47a553;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .log {
+            background-color: #31997aa6;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1.1em;
+            width: 100%;
+        }
+        .log:hover {
+            background-color: #165bd4;
+        }
+        .CA {
+            background-color: #42b72a;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1.1em;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .CA:hover {
+            background-color: #36a420;
+        }
+        p {
+            text-align: center;
+            margin-top: 10px;
+        }
+        hr {
+            margin: 20px 0;
+            border: none;
+            height: 1px;
+            background-color: #dddfe2;
+        }
+    </style>
+</head>
+<body>
+    <main id="main_con">
+        <section id="sec_con">
+            <div id="con_1">
+                <div class="img_logo">
+                    <img src="images/logo.png" alt="SocialNetworking Logo">
+                </div>
+                <div class="para_1">
+                    <p>Reset Password</p>
+                </div>
+            </div>
+            <div id="con_2">
+                <div id="form1">
+                    <form id="resetForm" action="/api/auth/reset-password" method="post">
+                        <input type="hidden" name="token" id="token" class="input_user form-control">
+                        <input type="password" name="password" required placeholder="New Password" class="input_user form-control">
+                        <button type="submit" class="input_user log btn btn-primary">Reset Password</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            if (token) {
+                document.getElementById('token').value = token;
+            }
+        });
+
+        document.getElementById('resetForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            const response = await fetch(`${form.action}/${data.token}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert('Password reset successful. You can now log in with your new password.');
+                window.location.href = '/login';
+            } else {
+                alert(result.error);
+            }
+        });
+    </script>
+</body>
+</html>
