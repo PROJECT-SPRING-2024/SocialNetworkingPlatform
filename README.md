@@ -54,8 +54,18 @@ To get started with the Social Networking Platform, follow these steps:
 ![Screenshot (2)](https://github.com/user-attachments/assets/4aa61b02-1bba-41d4-a7fc-ae51db549199).
 - **Login** 
 ![Screenshot (1)](https://github.com/user-attachments/assets/b9304ea1-8076-4b31-a255-f92193df2cab).
+
+
 - **Forgot** 
 ![Screenshot (3)](https://github.com/user-attachments/assets/5b124a9b-364f-417c-88c9-740a3a58d7d6).
+Encrypting password Password is encrypted in database.
+
+- **Authentication token Authentication token (JWT) is used to protect all endpoints that requires user to be logged in.**
+
+- **Password recovery (NodeMail link with recovery link and related functionality)**
+![Screenshot (281)](https://github.com/user-attachments/assets/b5f69e35-b63f-4dd0-9bb2-95f23d1313ea)
+![Screenshot (280)](https://github.com/user-attachments/assets/5a986d1a-2ef8-409a-92f3-b58225a1baa9)
+
 - **Adding posts & Adding image for a post** 
 
 ![Screenshot (272)](https://github.com/user-attachments/assets/9a66ac96-dde5-4a23-b899-9f84e6201ea3)
