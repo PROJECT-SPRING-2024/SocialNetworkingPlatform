@@ -61,6 +61,10 @@ To get started with the Social Networking Platform, follow these steps:
 Encrypting password Password is encrypted in database.
 
 - **Authentication token Authentication token (JWT) is used to protect all endpoints that requires user to be logged in.**
+  ![Screenshot (283)](https://github.com/user-attachments/assets/c38efe78-2d11-453c-91cb-ceb8e73acdde)
+
+- **Encrypting password**
+  ![Screenshot (282)](https://github.com/user-attachments/assets/0891bb81-dc1b-4cc7-9416-811f5c1d03be)
 
 - **Password recovery (NodeMail link with recovery link and related functionality)**
 ![Screenshot (281)](https://github.com/user-attachments/assets/b5f69e35-b63f-4dd0-9bb2-95f23d1313ea)
@@ -76,10 +80,11 @@ Encrypting password Password is encrypted in database.
 - **Displaying comments**
 ![Screenshot (275)](https://github.com/user-attachments/assets/d005fdf6-7cee-445e-a630-07951400370a)
  
- Comment count for a post is displayed in 
+- ** Comment**
+-  count for a post is displayed in 
 connection with other post information and a 
 modal window is used to display comments 
-(text, date and author).
+(text, date and author). 
 - **Like****** 
  User can like a post. Likes are displayed in 
 connection with other post information using 
@@ -104,33 +109,4 @@ Deleting comment Logged user can delete own comments.
 Editing comment Logged user can edit own comments
 - **Search** 
 Search/Filtering User can search/filter displayed posts. 
-
-- **Code Explain**
-- db.js
-- const { Pool } = require('pg');
-/*
-const pool = new Pool({ ... });
-This line creates a new instance of the Pool class and passes configuration options as an object.
-The configuration options include:
-user: The username for the database.
-host: The hostname of the database server.
-database: The name of the database to connect to.
-password: The password for the database user.
-port: The port number of the database server.
-These values are obtained from environment variables using process.env. 
-This is a common practice for securely storing sensitive information.
-*/
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
-
-pool.connect()
-  .then(() => console.log('Connected to the database'))
-  .catch(err => console.error('Database connection error', err.stack));
-
-module.exports = pool;
 
