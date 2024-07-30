@@ -3,6 +3,16 @@ create database social;
 next comand
 
 \c social
+next comand
+
+
+psql -U postgres
+next comand
+
+CREATE USER schapal WITH PASSWORD '1234';
+
+next comand
+
 GRANT ALL PRIVILEGES ON TABLE users TO schapal;
 next comand
 
@@ -14,11 +24,10 @@ CREATE TABLE users (
   profile_image VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-email: Unique identifier for each user.
-password: Encrypted password for user authentication.
-name: User's name.
-profile_image: Path to the user's profile image.
-created_at: Timestamp of when the user was created.
+ALTER TABLE users
+ADD COLUMN reset_password_token VARCHAR(255),
+ADD COLUMN reset_password_expires BIGINT;
+
 
 
 CREATE TABLE posts (
@@ -29,13 +38,6 @@ CREATE TABLE posts (
   image VARCHAR(255),
   date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-author: Foreign key referencing the user who created the post.
-image: Path to the post image.
-
-GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE commentsreview TO schapal;
-commentsreview_id_seq
-social=# GRANT USAGE, SELECT ON SEQUENCE commentsreview_id_seq TO schapal;
-
 CREATE TABLE commentsreview (
   id SERIAL PRIMARY KEY,
   commentdetails TEXT NOT NULL,
@@ -43,8 +45,6 @@ CREATE TABLE commentsreview (
   post_id INTEGER REFERENCES posts(id),
   date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-author: Foreign key referencing the user who made the comment.
-post_id: Foreign key referencing the post being commented on.
 
 CREATE TABLE likes (
   id SERIAL PRIMARY KEY,
@@ -52,24 +52,21 @@ CREATE TABLE likes (
   post_id INTEGER REFERENCES posts(id),
   UNIQUE (user_id, post_id)
 );
-user_id: Foreign key referencing the user who liked the post.
-post_id: Foreign key referencing the post that was liked.
 
-CREATE TABLE friends (
-  user_id INTEGER REFERENCES users(id),
-  friend_id INTEGER REFERENCES users(id),
-  status VARCHAR(50) NOT NULL, -- e.g., pending, accepted, blocked
-  requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (user_id, friend_id)
-);
-user_id: Foreign key referencing the user who sent the friend request.
-friend_id: Foreign key referencing the user who received the friend request.
-status: Status of the friend request (pending, accepted, blocked).
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE commentsreview TO schapal;
 
-CREATE TABLE messages (
-  id SERIAL PRIMARY KEY,
-  sender_id INTEGER REFERENCES users(id),
-  receiver_id INTEGER REFERENCES users(id),
-  message TEXT NOT NULL,
-  sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+GRANT USAGE, SELECT ON SEQUENCE commentsreview_id_seq TO schapal;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE posts TO schapal;
+
+GRANT USAGE, SELECT ON SEQUENCE posts_id_seq TO schapal;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE users TO schapal;
+
+GRANT USAGE, SELECT ON SEQUENCE users_id_seq TO schapal;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE likes TO schapal;
+
+GRANT USAGE, SELECT ON SEQUENCE likes_id_seq TO schapal;
+
+
