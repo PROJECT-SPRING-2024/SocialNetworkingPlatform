@@ -20,6 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));: Makes the public folde
 */
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 /*
 These routes (app.get('/...')) simply serve the corresponding HTML file from the public folder 

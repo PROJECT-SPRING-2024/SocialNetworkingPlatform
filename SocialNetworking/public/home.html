@@ -366,14 +366,55 @@
 
     </div>
 
+
     <!-- Footer Section -->
     <div class="footer">
       <p>© 2024 Shaik-Chapal</p>
     </div>
     <!-- The Modal -->
+<div id="updateModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="updateCloseButton">&times;</span>
+    <h2 class="sans-serif">Update Post</h2>
+    <form id="updatePostForm" enctype="multipart/form-data">
+      <textarea
+        type="text"
+        id="updatePostTitle"
+        name="title"
+        placeholder="Title"
+        style="height: 50px"
+        required
+      ></textarea>
+
+      <textarea
+        id="updatePostText"
+        name="description"
+        rows="4"
+        cols="50"
+        placeholder="What's on your mind?"
+        required
+      ></textarea>
+      <div class="preview">
+     
+        <input type="file" id="updateFileInput" name="image" accept="image/*" />
+       
+        <img
+        id="updateImagePreview"
+          src="#"
+          alt="Your Image"
+          style="display: none"
+        />
+      </div>
+      <button type="submit" id="updatePostButton">Update</button>
+    </form>
+  </div>
+</div>
+
+    <!-- The Modal -->
     <div id="myModal" class="modal">
       <div class="modal-content">
-        <span class="close">&times;</span>
+        
+        <span class="close" id="postCloseButton">&times;</span>
         <h2 class="sans-serif">Create Post</h2>
         <form id="postForm" enctype="multipart/form-data">
           <textarea
@@ -455,6 +496,8 @@
         const currentPageDisplay = document.getElementById("currentPage");
         const commentModal = document.getElementById("commentModal");
         const closeBtn = document.getElementsByClassName("close")[0];
+        const postCloseButton = document.getElementById("postCloseButton");
+        const myModal  = document.getElementById("myModal");
         const commentModalClose = document.getElementsByClassName("comment-modal")[0];
         const commentForm = document.getElementById("commentForm");
         const commentText = document.getElementById("commentText");
@@ -537,9 +580,14 @@
             event.preventDefault();
             const currentPostId = event.target.closest('.option-icon').dataset.postId;
             console.log(currentPostId);
+         
+
             
             const optionModal = document.getElementById('optionsModal');
             optionModal.style.display = "block";
+            
+    // Add data attribute to the modal for the current post ID
+    optionModal.dataset.postId = currentPostId;
           });
         });
     // Add event listeners for like icons
@@ -733,9 +781,19 @@ const fetchComments = async (postId) => {
       const postForm = document.getElementById("postForm");
    
       const optionsModal = document.getElementById("optionsModal");
+      
+      const updateModal = document.getElementById("updateModal");
   const optionsModalClose = document.getElementById("optionsModalClose");
   const optionsModalEditButton = document.getElementById("optionsModalEditButton");
   const optionsModalDeleteButton = document.getElementById("optionsModalDeleteButton");
+
+  const updateCloseButton = document.getElementById("updateCloseButton");
+const updatePostForm = document.getElementById("updatePostForm");
+const updatePostTitle = document.getElementById("updatePostTitle");
+const updatePostText = document.getElementById("updatePostText");
+const updateFileInput = document.getElementById("updateFileInput");
+const updateImagePreview = document.getElementById("updateImagePreview");
+const updatePostButton = document.getElementById("updatePostButton");
 
   // Function to open the modal
   const openModal = () => {
@@ -745,23 +803,54 @@ const fetchComments = async (postId) => {
   // Function to close the modal
   const closeModal = () => {
     optionsModal.style.display = "none";
+    updateModal.style.display = "none";
+    
+    myModal.style.display = "none";
   };
 
-  // Close modal when the close button is clicked
+  // Close modal when the close button is clicked postCloseButton
   optionsModalClose.addEventListener("click", closeModal);
+  updateCloseButton.addEventListener("click", closeModal);
+  postCloseButton.addEventListener("click", closeModal);
 
   // Close modal when clicking outside the modal content
   window.addEventListener("click", (event) => {
+   
     if (event.target === optionsModal) {
       closeModal();
     }
   });
 
   // Add event listeners to buttons inside the modal
-  optionsModalEditButton.addEventListener("click", () => {
-    console.log("Edit button clicked");
-    closeModal();
-  });
+  optionsModalEditButton.addEventListener("click", async () => {
+  console.log("Edit button clicked");
+  const optionModal = document.getElementById('optionsModal');
+  const currentPostId = optionModal.dataset.postId;
+  console.log("Edit Post ID:", currentPostId);
+  optionModal.style.display = "none";
+
+  const updateModal = document.getElementById('updateModal');
+  updateModal.style.display = "block";
+
+  try {
+    const post = await fetchPostDetails(currentPostId);
+    document.getElementById('updatePostTitle').value = post.title;
+    document.getElementById('updatePostText').value = post.description;
+    
+    if (post.image) {
+      const updateImagePreview = document.getElementById('updateImagePreview');
+      updateImagePreview.src = `/public${post.image}`; // Adjust the path as needed
+      updateImagePreview.style.display = 'block';
+    } else {
+      document.getElementById('updateImagePreview').style.display = 'none';
+    }
+  } catch (error) {
+    console.error('Error fetching post details:', error);
+  }
+
+  updateModal.setAttribute('data-post-id', currentPostId);
+});
+
 
   optionsModalDeleteButton.addEventListener("click", () => {
     console.log("Delete button clicked");
@@ -803,6 +892,20 @@ const fetchComments = async (postId) => {
     event.preventDefault();
     logout();
   });
+  async function fetchPostDetails(postId) {
+  const response = await fetch(`/api/posts/${postId}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you store the token in localStorage
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch post details');
+  }
+
+  return await response.json();
+}
 
   const logout = () => {
     localStorage.removeItem('token');

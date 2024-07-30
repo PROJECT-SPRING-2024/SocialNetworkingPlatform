@@ -87,6 +87,89 @@ router.get('/', authenticateToken, async (req, res) => {
   }
 });
 
+
+
+
+
+
+// Update a post by ID
+router.put('/:id', authenticateToken, upload.single('image'), async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.user.id; // Assuming authenticateToken middleware sets req.user
+  const { title, description } = req.body;
+  const image = req.file ? req.file.filename : null;
+
+  try {
+    let query = 'UPDATE posts SET title = $1, description = $2';
+    let params = [title, description, postId, userId];
+
+    if (image) {
+      query += ', image = $3 WHERE id = $4 AND author = $5 RETURNING *';
+      params = [title, description, image, postId, userId];
+    } else {
+      query += ' WHERE id = $3 AND author = $4 RETURNING *';
+    }
+
+    const result = await pool.query(query, params);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Post not found or you are not authorized to update this post' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error updating post:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get a post by ID
+router.get('/:id', authenticateToken, async (req, res) => {
+  const postId = req.params.id;
+
+  try {
+    const result = await pool.query(
+      'SELECT id, title, description, image, author FROM posts WHERE id = $1',
+      [postId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error fetching post details:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+
+// Delete a post by ID
+router.delete('/:id', authenticateToken, async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.user.id; // Assuming authenticateToken middleware sets req.user
+
+  try {
+    const result = await pool.query(
+      'DELETE FROM posts WHERE id = $1 AND author = $2 RETURNING *',
+      [postId, userId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Post not found or you are not authorized to delete this post' });
+    }
+
+    res.json({ message: 'Post deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting post:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 // Add like
 router.post('/likes', authenticateToken, async (req, res) => {
   console.log('POST /likes called');
