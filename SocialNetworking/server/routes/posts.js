@@ -97,7 +97,9 @@ router.put('/:id', authenticateToken, upload.single('image'), async (req, res) =
   const postId = req.params.id;
   const userId = req.user.id; // Assuming authenticateToken middleware sets req.user
   const { title, description } = req.body;
-  const image = req.file ? req.file.filename : null;
+  const image = req.file ? `/images/${req.file.filename}` : null;
+
+
 
   try {
     let query = 'UPDATE posts SET title = $1, description = $2';

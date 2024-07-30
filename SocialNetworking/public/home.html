@@ -154,7 +154,12 @@
   background-color: #f9f9f9;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-
+#updateImagePreview {
+      display: none;
+      max-width: 25%;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
 
     #imagePreview {
       display: none;
@@ -770,7 +775,7 @@ const fetchComments = async (postId) => {
   }
 };
 
-        fetchPosts();
+fetchPosts();
       });
 
       const modal = document.getElementById("myModal");
@@ -836,26 +841,84 @@ const updatePostButton = document.getElementById("updatePostButton");
     const post = await fetchPostDetails(currentPostId);
     document.getElementById('updatePostTitle').value = post.title;
     document.getElementById('updatePostText').value = post.description;
-    
+
+    const updateImagePreview = document.getElementById('updateImagePreview');
     if (post.image) {
-      const updateImagePreview = document.getElementById('updateImagePreview');
       updateImagePreview.src = `/public${post.image}`; // Adjust the path as needed
       updateImagePreview.style.display = 'block';
     } else {
-      document.getElementById('updateImagePreview').style.display = 'none';
+      updateImagePreview.style.display = 'none';
     }
   } catch (error) {
     console.error('Error fetching post details:', error);
   }
 
-  updateModal.setAttribute('data-post-id', currentPostId);
+  updatePostForm.dataset.postId = currentPostId; // Add data attribute to the form for the current post ID
 });
 
 
-  optionsModalDeleteButton.addEventListener("click", () => {
-    console.log("Delete button clicked");
-    closeModal();
+updateFileInput.addEventListener("change", () => {
+    if (updateFileInput.files && updateFileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        updateImagePreview.src = e.target.result;
+        updateImagePreview.style.display = 'block';
+      };
+      reader.readAsDataURL(updateFileInput.files[0]);
+    } else {
+      updateImagePreview.style.display = 'none';
+    }
   });
+updatePostForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const currentPostId = updatePostForm.dataset.postId;
+  console.log("Updating Post ID:", currentPostId);
+
+  const formData = new FormData(updatePostForm);
+
+  fetch(`/api/posts/${currentPostId}`, {
+    method: 'PUT',
+    body: formData,
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you store the token in localStorage
+    }
+  }).then(response => response.json())
+    .then(data => {
+      console.log('Post updated successfully:', data);
+      // Update the post in the DOM or refresh the post list
+      updateModal.style.display = "none";
+      window.location.reload(); // Reload the page
+    }).catch(error => console.error('Error:', error));
+});
+
+optionsModalDeleteButton.addEventListener("click", () => {
+  console.log("Delete button clicked");
+  const optionModal = document.getElementById('optionsModal');
+
+  const currentPostId = optionModal.dataset.postId;
+  console.log("Edit Post ID:", currentPostId);
+
+  // Make a request to the server to delete the post
+  fetch(`/api/posts/${currentPostId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you store the token in localStorage
+    }
+  }).then(response => {
+    if (response.ok) {
+      console.log('Post deleted successfully');
+      window.location.reload(); // Reload the page
+      // Remove the post from the DOM or refresh the post list
+    } else {
+      console.error('Failed to delete post');
+    }
+  }).catch(error => console.error('Error:', error));
+
+  optionModal.style.display = "none";
+});
+
 
       btn.onclick = function () {
         modal.style.display = "block";
