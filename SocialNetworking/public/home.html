@@ -485,7 +485,17 @@
       </div>
     </div>
 
-    
+     <!-- optionsModal Modal -->
+     <div id="optionsModal1" class="modal">
+      <div class="modal-content">
+        <span  id="optionsModalClose1" class="close comment-modal">&times;</span>
+        <h2  class="sans-serif">Option</h2>
+        <button type="submit" id="optionsModalEditButton1" class="button-style">Edit</button>
+        <button type="submit" id="optionsModalDeleteButton1" class="button-style">Delete</button>
+     
+       
+      </div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -688,7 +698,7 @@ const fetchComments = async (postId) => {
 
       const profilePic = comment.profile_image || 'images/profile-pic.jpg';
       const authorActions = comment.is_author ? 
-        '<a href="#"><i class="fa-solid fa-ellipsis-v" aria-hidden="true"></i></a>' : '';
+        '<a href="#"><i id="optionsModalComment" class="fa-solid fa-ellipsis-v" aria-hidden="true"></i></a>' : '';
 
       commentElement.innerHTML = `
         <div class="post-row">
@@ -707,6 +717,46 @@ const fetchComments = async (postId) => {
       `;
 
       commentsContainer.appendChild(commentElement);
+
+
+      document.querySelectorAll('#optionsModalComment').forEach(icon => {
+      icon.addEventListener('click', (event) => {
+        const commentId = event.target.getAttribute('data-comment-id');
+        const postId = event.target.getAttribute('data-post-id');
+        const optionsModal1 = document.getElementById("optionsModal1");
+        const optionsModalClose = document.getElementById("optionsModalClose1");
+        const optionsModalEditButton1 = document.getElementById("optionsModalEditButton1");
+        const optionsModalDeleteButton1 = document.getElementById("optionsModalDeleteButton1");
+
+        optionsModal1.style.display = "block";
+        console.log('Ellipsis icon clicked for comment:', commentId, 'post:', postId);
+
+        // Handle the close button click
+        optionsModalClose.addEventListener('click', () => {
+          optionsModal1.style.display = "none";
+        });
+
+        // Handle the "Edit" button click
+        optionsModalEditButton1.addEventListener('click', () => {
+          console.log('Edit button clicked for comment:', commentId, 'post:', postId);
+          // Add your custom logic here for editing the comment
+          optionsModal1.style.display = "none";
+        });
+
+        // Handle the "Delete" button click
+        optionsModalDeleteButton1.addEventListener('click', () => {
+          console.log('Delete button clicked for comment:', commentId, 'post:', postId);
+          // Add your custom logic here for deleting the comment
+          optionsModal1.style.display = "none";
+        });
+      });
+    });
+
+
+
+
+
+    
     });
   } catch (error) {
     console.error("Error fetching comments:", error);
