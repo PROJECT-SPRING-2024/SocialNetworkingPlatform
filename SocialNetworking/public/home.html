@@ -222,7 +222,7 @@
         <!-- Logo with a link to the homepage -->
 
         <!-- Search box for searching content on the website -->
-        <div class="search-box">
+        <div id="searchButton" class="search-box">
           <img src="images/search.png" />
           <input type="text" placeholder="Search" />
         </div>
@@ -251,7 +251,7 @@
           <div class="user-profile">
             <img src="images/profile-pic.jpg" />
             <div>
-              <p>Sheikh Chapal</p>
+              <p id="name" >Sheikh Chapal</p>
               <a href="profile.html">See your profile</a>
             </div>
           </div>
@@ -307,7 +307,7 @@
           <div class="user-profile">
             <img src="images/profile-pic.jpg" alt="Profile Picture" />
             <div>
-              <p>Shaik-Chapal</p>
+              <p id="name1">Shaik-Chapal</p>
               <small>Public <i class="fa-solid fa-caret-down"></i></small>
             </div>
           </div>
@@ -507,7 +507,8 @@
       document.addEventListener("DOMContentLoaded", () => {
         let currentPage = 1;
         const postsContainer = document.getElementById("postsContainer");
-        
+        const nameElement = document.getElementById('name');
+        const nameElement1 = document.getElementById('name1');
         const currentPageDisplay = document.getElementById("currentPage");
         const commentModal = document.getElementById("commentModal");
         const closeBtn = document.getElementsByClassName("close")[0];
@@ -517,6 +518,41 @@
         const commentForm = document.getElementById("commentForm");
         const commentText = document.getElementById("commentText");
         let currentPostId = null;
+        const searchButton = document.getElementById('searchButton');
+
+searchButton.addEventListener('click', () => {
+  window.location.href = '/search'; 
+});
+        // Function to fetch user information
+    function fetchUserInfo() {
+        fetch('/api/posts/users', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming the token is stored in localStorage
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                nameElement.textContent = `Error: ${data.error}`;
+                nameElement1.textContent = `Error: ${data.error}`;
+            } else {
+                nameElement.textContent = data.name;
+                nameElement1.textContent = data.name;
+            }
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+            nameElement.textContent = 'Failed to load user information.';
+            nameElement1.textContent = 'Failed to load user information.';
+        });
+    }
 
         const fetchPosts = async () => {
   try {
@@ -751,11 +787,6 @@ const fetchComments = async (postId) => {
         });
       });
     });
-
-
-
-
-
     
     });
   } catch (error) {
@@ -769,6 +800,7 @@ const fetchComments = async (postId) => {
           modal.style.display = "none";
           const optionModal = document.getElementById('optionsModal');
           optionModal.style.display = "none";
+          window.location.reload();
         };
         commentModalClose.onclick = function () {
           commentModal.style.display = "none";
@@ -824,7 +856,7 @@ const fetchComments = async (postId) => {
     console.error("Error:", error);
   }
 };
-
+fetchUserInfo();
 fetchPosts();
       });
 
@@ -1042,6 +1074,7 @@ optionsModalDeleteButton.addEventListener("click", () => {
           const data = await response.json();
           console.log(data);
           modal.style.display = "none";
+          window.location.reload();
         } catch (error) {
           console.error("Error:", error);
         }

@@ -88,7 +88,66 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 
+// Search posts
+router.get('/search', authenticateToken, async (req, res) => {
+  const userId = req.user ? req.user.id : null;
+  const searchQuery = req.query.q || ''; // Get the search query from the request
 
+  try {
+    const query = `
+      SELECT
+        p.id AS post_id,
+        p.title,
+        p.description,
+        p.image,
+        p.date AS post_date,
+        u.name AS author_name,
+        u.email AS author_email,
+        u.profile_image AS author_profile_image,
+        COALESCE(l.likes_count, 0) AS likes_count,
+        COALESCE(c.comments_count, 0) AS comments_count,
+        CASE WHEN p.author = $1 THEN true ELSE false END AS user_has_post,
+        CASE WHEN ul.user_id IS NOT NULL THEN true ELSE false END AS user_liked_post
+      FROM
+        posts p
+        JOIN users u ON p.author = u.id
+        LEFT JOIN (
+          SELECT
+            post_id,
+            COUNT(*) AS likes_count
+          FROM
+            likes
+          GROUP BY
+            post_id
+        ) l ON p.id = l.post_id
+        LEFT JOIN (
+          SELECT
+            post_id,
+            COUNT(*) AS comments_count
+          FROM
+            commentsreview 
+          GROUP BY
+            post_id
+        ) c ON p.id = c.post_id
+        LEFT JOIN (
+          SELECT
+            post_id,
+            user_id
+          FROM
+            likes
+          WHERE user_id = $1
+        ) ul ON p.id = ul.post_id
+      WHERE
+        p.title ILIKE $2 OR p.description ILIKE $2;
+    `;
+    const result = await pool.query(query, [userId, `%${searchQuery}%`]);
+    console.log('Query Result:', result.rows);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error executing query:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 
@@ -121,6 +180,21 @@ router.put('/:id', authenticateToken, upload.single('image'), async (req, res) =
     res.json(result.rows[0]);
   } catch (err) {
     console.error('Error updating post:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+router.get('/users', authenticateToken, async (req, res) => {
+  try {
+    const query = 'SELECT name, email, profile_image FROM users WHERE id = $1';
+    const result = await pool.query(query, [req.user.id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error fetching user information:', err);
     res.status(500).json({ error: err.message });
   }
 });
