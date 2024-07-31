@@ -811,6 +811,7 @@ const fetchComments = async (postId) => {
           if (event.target == commentModal) {
           // alert(2);
             commentModal.style.display = "none";
+            window.location.reload();
           }
         };
 
@@ -852,6 +853,7 @@ const fetchComments = async (postId) => {
     console.log(responseData);
     commentText.value = "";
     fetchComments(currentPostId);
+    
   } catch (error) {
     console.error("Error:", error);
   }

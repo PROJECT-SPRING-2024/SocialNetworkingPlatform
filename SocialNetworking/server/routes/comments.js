@@ -19,7 +19,7 @@ router.get('/:postId', authenticateToken, async (req, res) => {
              CASE WHEN c.author = $2 THEN true ELSE false END as is_author
       FROM commentsreview c
       JOIN users u ON c.author = u.id
-      WHERE c.post_id = $1 ORDER BY c.date ASC
+      WHERE c.post_id = $1 ORDER BY  c.id DESC 
     `, [postId, userId]);
 
     if (result.rows.length === 0) {

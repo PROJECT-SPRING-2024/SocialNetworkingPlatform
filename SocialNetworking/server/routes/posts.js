@@ -35,48 +35,51 @@ router.get('/', authenticateToken, async (req, res) => {
   const userId = req.user ? req.user.id : null;// Assuming authenticateToken middleware sets req.user
   try {
     const query = `
-      SELECT
-        p.id AS post_id,
-        p.title,
-        p.description,
-        p.image,
-        p.date AS post_date,
-        u.name AS author_name,
-        u.email AS author_email,
-        u.profile_image AS author_profile_image,
-        COALESCE(l.likes_count, 0) AS likes_count,
-        COALESCE(c.comments_count, 0) AS comments_count,
-        CASE WHEN p.author = $1 THEN true ELSE false END AS user_has_post,
-        CASE WHEN ul.user_id IS NOT NULL THEN true ELSE false END AS user_liked_post
-      FROM
-        posts p
-        JOIN users u ON p.author = u.id
-        LEFT JOIN (
-          SELECT
+     SELECT
+    p.id AS post_id,
+    p.title,
+    p.description,
+    p.image,
+    p.date AS post_date,
+    u.name AS author_name,
+    u.email AS author_email,
+    u.profile_image AS author_profile_image,
+    COALESCE(l.likes_count, 0) AS likes_count,
+    COALESCE(c.comments_count, 0) AS comments_count,
+    CASE WHEN p.author = $1 THEN true ELSE false END AS user_has_post,
+    CASE WHEN ul.user_id IS NOT NULL THEN true ELSE false END AS user_liked_post
+FROM
+    posts p
+    JOIN users u ON p.author = u.id
+    LEFT JOIN (
+        SELECT
             post_id,
             COUNT(*) AS likes_count
-          FROM
+        FROM
             likes
-          GROUP BY
+        GROUP BY
             post_id
-        ) l ON p.id = l.post_id
-        LEFT JOIN (
-          SELECT
+    ) l ON p.id = l.post_id
+    LEFT JOIN (
+        SELECT
             post_id,
             COUNT(*) AS comments_count
-          FROM
+        FROM
             commentsreview 
-          GROUP BY
+        GROUP BY
             post_id
-        ) c ON p.id = c.post_id
-        LEFT JOIN (
-          SELECT
+    ) c ON p.id = c.post_id
+    LEFT JOIN (
+        SELECT
             post_id,
             user_id
-          FROM
+        FROM
             likes
-          WHERE user_id = $1
-        ) ul ON p.id = ul.post_id;
+        WHERE user_id = $1
+    ) ul ON p.id = ul.post_id
+ORDER BY
+    p.id DESC;
+
     `;
     const result = await pool.query(query, [userId]);
     console.log('Query Result:', result.rows); // Log the query result
@@ -95,50 +98,53 @@ router.get('/search', authenticateToken, async (req, res) => {
 
   try {
     const query = `
-      SELECT
-        p.id AS post_id,
-        p.title,
-        p.description,
-        p.image,
-        p.date AS post_date,
-        u.name AS author_name,
-        u.email AS author_email,
-        u.profile_image AS author_profile_image,
-        COALESCE(l.likes_count, 0) AS likes_count,
-        COALESCE(c.comments_count, 0) AS comments_count,
-        CASE WHEN p.author = $1 THEN true ELSE false END AS user_has_post,
-        CASE WHEN ul.user_id IS NOT NULL THEN true ELSE false END AS user_liked_post
-      FROM
-        posts p
-        JOIN users u ON p.author = u.id
-        LEFT JOIN (
-          SELECT
+     SELECT
+    p.id AS post_id,
+    p.title,
+    p.description,
+    p.image,
+    p.date AS post_date,
+    u.name AS author_name,
+    u.email AS author_email,
+    u.profile_image AS author_profile_image,
+    COALESCE(l.likes_count, 0) AS likes_count,
+    COALESCE(c.comments_count, 0) AS comments_count,
+    CASE WHEN p.author = $1 THEN true ELSE false END AS user_has_post,
+    CASE WHEN ul.user_id IS NOT NULL THEN true ELSE false END AS user_liked_post
+FROM
+    posts p
+    JOIN users u ON p.author = u.id
+    LEFT JOIN (
+        SELECT
             post_id,
             COUNT(*) AS likes_count
-          FROM
+        FROM
             likes
-          GROUP BY
+        GROUP BY
             post_id
-        ) l ON p.id = l.post_id
-        LEFT JOIN (
-          SELECT
+    ) l ON p.id = l.post_id
+    LEFT JOIN (
+        SELECT
             post_id,
             COUNT(*) AS comments_count
-          FROM
+        FROM
             commentsreview 
-          GROUP BY
+        GROUP BY
             post_id
-        ) c ON p.id = c.post_id
-        LEFT JOIN (
-          SELECT
+    ) c ON p.id = c.post_id
+    LEFT JOIN (
+        SELECT
             post_id,
             user_id
-          FROM
+        FROM
             likes
-          WHERE user_id = $1
-        ) ul ON p.id = ul.post_id
-      WHERE
-        p.title ILIKE $2 OR p.description ILIKE $2;
+        WHERE user_id = $1
+    ) ul ON p.id = ul.post_id
+WHERE
+    p.title ILIKE $2 OR p.description ILIKE $2
+ORDER BY
+    p.id DESC;
+
     `;
     const result = await pool.query(query, [userId, `%${searchQuery}%`]);
     console.log('Query Result:', result.rows);
@@ -221,30 +227,48 @@ router.get('/:id', authenticateToken, async (req, res) => {
 });
 
 
-
-
-// Delete a post by ID
+// Delete a post by ID along with its likes and comments
 router.delete('/:id', authenticateToken, async (req, res) => {
   const postId = req.params.id;
   const userId = req.user.id; // Assuming authenticateToken middleware sets req.user
 
+  const client = await pool.connect();
   try {
-    const result = await pool.query(
+    await client.query('BEGIN');
+
+    // Delete likes associated with the post
+    await client.query(
+      'DELETE FROM likes WHERE post_id = $1',
+      [postId]
+    );
+
+    // Delete comments associated with the post
+    await client.query(
+      'DELETE FROM commentsreview WHERE post_id = $1',
+      [postId]
+    );
+
+    // Delete the post
+    const result = await client.query(
       'DELETE FROM posts WHERE id = $1 AND author = $2 RETURNING *',
       [postId, userId]
     );
 
     if (result.rowCount === 0) {
+      await client.query('ROLLBACK');
       return res.status(404).json({ error: 'Post not found or you are not authorized to delete this post' });
     }
 
-    res.json({ message: 'Post deleted successfully' });
+    await client.query('COMMIT');
+    res.json({ message: 'Post and associated data deleted successfully' });
   } catch (err) {
+    await client.query('ROLLBACK');
     console.error('Error deleting post:', err);
     res.status(500).json({ error: err.message });
+  } finally {
+    client.release();
   }
 });
-
 
 // Add like
 router.post('/likes', authenticateToken, async (req, res) => {
