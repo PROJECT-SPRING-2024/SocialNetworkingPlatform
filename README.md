@@ -98,6 +98,9 @@ related to posts (e.g. comments) are also
 deleted.
 
 - **Editing posts** 
+
+
+
  Logged user can edit own posts.
 - **Editing posts**
 
@@ -110,3 +113,4 @@ Editing comment Logged user can edit own comments
 - **Search** 
 Search/Filtering User can search/filter displayed posts. 
 
+https://github.com/user-attachments/assets/96946815-6e83-4c38-8e21-4bf299aa7459
