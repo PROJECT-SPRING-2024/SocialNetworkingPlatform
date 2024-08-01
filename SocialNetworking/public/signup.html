@@ -1,167 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SocialNetworking - Sign Up</title>
-    <style>
-        /* Basic styling for the body to center content and set background color */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SocialNetworking - Sign Up</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .gradient-form {
+      background: #eee;
+    }
 
-        /* Styling for the main container */
-        #main_con {
-            background-color: #fff;
-            width: 400px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+    .gradient-custom-2 {
+      background: #fccb90;
+      background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+      background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+    }
 
-        /* Styling for the logo section */
-        .img_logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    @media (min-width: 768px) {
+      .gradient-form {
+        height: 100vh !important;
+      }
+    }
 
-        .img_logo img {
-            width: 150px;
-        }
-
-        /* Styling for the introductory paragraph */
-        .para_1 {
-            text-align: center;
-            font-size: 1.2em;
-            margin-bottom: 20px;
-        }
-
-        /* Styling for input fields */
-        .input_user {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #47a553;
-            border-radius: 5px;
-            font-size: 1em;
-        }
-
-        /* Styling for the signup button */
-        .log {
-            background-color: #31997aa6;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 1.1em;
-        }
-
-        .log:hover {
-            background-color: #165bd4;
-        }
-
-        /* Styling for the login button */
-        .CA {
-            background-color: #42b72a;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 1.1em;
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-        .CA:hover {
-            background-color: #36a420;
-        }
-
-        /* Styling for paragraphs */
-        p {
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        /* Styling for horizontal rule */
-        hr {
-            margin: 20px 0;
-            border: none;
-            height: 1px;
-            background-color: #dddfe2;
-        }
-    </style>
+    @media (min-width: 769px) {
+      .gradient-custom-2 {
+        border-top-right-radius: .3rem;
+        border-bottom-right-radius: .3rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Main container -->
-    <main id="main_con">
-        <!-- Section container -->
-        <section id="sec_con">
-            <!-- Container for the logo and introductory paragraph -->
-            <div id="con_1">
-                <div class="img_logo">
-                    <img src="images/logo.png" alt="SocialNetworking Logo">
+  <section class="h-100 gradient-form" style="background-color: #eee;">
+    <div class="container  h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-xl-10">
+          <div class="card rounded-3 text-black">
+            <div class="row g-0">
+              <div class="col-lg-6">
+                <div class="card-body p-md-5 mx-md-4">
+
+                  <div class="text-center">
+                    <h4 class="mt-1 mb-5 pb-1">Social-Site</h4>
+                  </div>
+
+                  <form id="signupForm" action="/api/auth/signup" method="post">
+                    <p>Please sign up to your account</p>
+
+                    <div class="form-outline mb-4">
+                      <input type="text" name="name" required placeholder="Name" class="form-control" />
+                      <label class="form-label" for="name">Name</label>
+                    </div>
+
+                    <div class="form-outline mb-4">
+                      <input type="email" name="email" required placeholder="Email" class="form-control" />
+                      <label class="form-label" for="email">Email</label>
+                    </div>
+
+                    <div class="form-outline mb-4">
+                      <input type="password" name="password" required placeholder="Password" class="form-control" />
+                      <label class="form-label" for="password">Password</label>
+                    </div>
+
+                    <div class="text-center pt-1 mb-5 pb-1">
+                      <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Sign Up</button>
+                      <a class="text-muted" href="/login">Already have an account? Log in</a>
+                    </div>
+
+                  </form>
+
                 </div>
-                <div class="para_1">
-                    <p>Sign Up</p>
-                </div>       
-            </div>
-
-            <!-- Container for the form and additional links -->
-            <div id="con_2">
-                <!-- Form container -->
-                <div id="form1">
-                    <form id="signupForm" action="/api/auth/signup" method="post">
-                        <!-- Name input field -->
-                        <input type="text" name="name" required placeholder="Name" class="input_user">
-                        <!-- Email input field -->
-                        <input type="email" name="email" required placeholder="Email" class="input_user">
-                        <!-- Password input field -->
-                        <input type="password" name="password" required placeholder="Password" class="input_user">
-                        <!-- Signup button -->
-                        <button type="submit" class="input_user log">Sign Up</button>
-                        <!-- Already have an account link -->
-                        <p>
-                            <a style="color: #1877f2;" onclick="window.location.href='/login'; return false;">Already have an account? Log in</a>
-                        </p>
-                    </form>
+              </div>
+              <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                  <h4 class="mb-4">Join the Community</h4>
+                  <p class="small mb-0">Welcome to SocialSite, your go-to platform for connecting with friends, sharing moments, and discovering new content. Join us today and be part of a vibrant online community where you can express yourself freely and connect with like-minded individuals.</p>
                 </div>
+              </div>
             </div>
-        </section>
-    </main>
-    <script>
-        // Add event listener to handle form submission
-        document.getElementById('signupForm').addEventListener('submit', async function(event) {
-            event.preventDefault();  // Prevent default form submission behavior
-            const form = event.target;
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-            // Send form data to the server using Fetch API
-            const response = await fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const form = event.target;
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
 
-            // Handle server response
-            const result = await response.json();
-            if (response.ok) {
-                localStorage.setItem('token', result.token);  // Store the token in local storage
-                window.location.href = '/home';  // Redirect to home page
-            } else {
-                alert(result.error);  // Show error message
-            }
-        });
-    </script>
+      const response = await fetch(form.action, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        localStorage.setItem('token', result.token);
+        window.location.href = '/home';
+      } else {
+        alert(result.error);
+      }
+    });
+  </script>
 </body>
 </html>
