@@ -32,6 +32,63 @@ router.get('/:postId', authenticateToken, async (req, res) => {
 });
 
 // Ensure to use authenticateToken middleware for routes that require authentication
+// Route to update a comment by ID
+router.put('/:commentId', authenticateToken, async (req, res) => {
+  const { commentId } = req.params;
+  const { commentdetails } = req.body;
+  const author = req.user ? req.user.id : null;
+
+  if (!author) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  if (!commentdetails) {
+    return res.status(400).json({ error: 'Comment description cannot be empty' });
+  }
+
+  try {
+    const result = await pool.query(
+      'UPDATE commentsreview SET commentdetails = $1 WHERE id = $2 AND author = $3 RETURNING *',
+      [commentdetails, commentId, author]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Comment not found or you are not the author' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Database error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// Route to delete a comment by ID
+router.delete('/:commentId', authenticateToken, async (req, res) => {
+  const { commentId } = req.params;
+  const author = req.user ? req.user.id : null;
+
+  if (!author) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const result = await pool.query(
+      'DELETE FROM commentsreview WHERE id = $1 AND author = $2 RETURNING *',
+      [commentId, author]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Comment not found or you are not the author' });
+    }
+
+    res.json({ message: 'Comment deleted successfully' });
+  } catch (err) {
+    console.error('Database error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 // Route to add a new comment
