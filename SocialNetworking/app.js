@@ -52,6 +52,12 @@ app.get('/reset-password', (req, res) => {
 app.get('/search', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'search.html'));
 });
+app.get('/news', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'news.html'));
+});
+app.get('/friends', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'friends.html'));
+});
 
 
 /*
