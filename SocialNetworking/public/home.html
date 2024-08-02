@@ -414,6 +414,26 @@
     </form>
   </div>
 </div>
+    <!-- The Comment Modal -->
+    <div id="updateCommentModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="updateCloseButtonComment">&times;</span>
+        <h2 class="sans-serif">Update Post</h2>
+        <form id="updatePostForm" enctype="multipart/form-data">
+          <textarea
+            type="text"
+            id="updateCommentTitle"
+            name="title"
+            placeholder="Title"
+            style="height: 50px"
+            required
+          ></textarea>
+    
+
+          <button type="submit" id="updateCommentButton">Update</button>
+        </form>
+      </div>
+    </div>
 
     <!-- The Modal -->
     <div id="myModal" class="modal">
@@ -774,17 +794,78 @@ const fetchComments = async (postId) => {
 
         // Handle the "Edit" button click
         optionsModalEditButton1.addEventListener('click', () => {
-          console.log('Edit button clicked for comment:', commentId, 'post:', postId);
-          // Add your custom logic here for editing the comment
-          optionsModal1.style.display = "none";
-        });
+  console.log('Edit button clicked for comment:', commentId, 'post:', postId);
+  const optionsModal1 = document.getElementById("optionsModal1");
+  optionsModal1.style.display = "none";
+  // Open the update modal
+  const updateModal = document.getElementById("updateCommentModal");
+  updateModal.style.display = "block";
+
+  // Populate the modal with current comment details
+  document.getElementById('updateCommentTitle').value = event.target.closest('.comment-box').querySelector('.post-text span').innerText;
+
+  // Handle the update form submission
+  document.getElementById('updatePostForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const updatedComment = document.getElementById('updateCommentTitle').value;
+
+    try {
+      const response = await fetch(`/api/comments/${commentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({ commentdetails: updatedComment })
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const updatedCommentData = await response.json();
+      console.log('Comment updated:', updatedCommentData);
+
+      // Update the comment in the UI
+      event.target.closest('.comment-box').querySelector('.post-text span').innerText = updatedComment;
+
+      updateModal.style.display = "none";
+    } catch (error) {
+      console.error('Error updating comment:', error);
+    }
+  };
+
+  optionsModal1.style.display = "none";
+});
 
         // Handle the "Delete" button click
-        optionsModalDeleteButton1.addEventListener('click', () => {
-          console.log('Delete button clicked for comment:', commentId, 'post:', postId);
-          // Add your custom logic here for deleting the comment
-          optionsModal1.style.display = "none";
-        });
+        optionsModalDeleteButton1.addEventListener('click', async () => {
+  console.log('Delete button clicked for comment:', commentId, 'post:', postId);
+
+  try {
+    const response = await fetch(`/api/comments/${commentId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const result = await response.json();
+    console.log('Comment deleted:', result);
+
+    // Remove the comment from the UI
+    event.target.closest('.comment-box').remove();
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+  }
+
+  optionsModal1.style.display = "none";
+});
+
       });
     });
     
