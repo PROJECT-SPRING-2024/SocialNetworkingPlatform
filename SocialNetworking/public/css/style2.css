@@ -1,0 +1,246 @@
+/* Custom Blue Color Scheme */
+
+* {
+    font-family: Roboto, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+}
+
+section {
+    position: fixed;
+    top: 0px;
+    height: 100vh;
+}
+
+h1 {
+    font-size: 18px;
+}
+
+#channel-area {
+    width: 399px;
+    height: 100vh;
+    border-right: 1px solid rgb(199, 199, 199);
+}
+
+#message-area {
+    width: calc(100% - 400px);
+    left: 400px;
+}
+
+.headbar {
+    background-color: #1b91cf; /* Custom Blue */
+    color: white; /* Contrast */
+    height: 66px;
+    line-height: 66px;
+    padding: 0px 22px 0px 22px;
+}
+
+#message-area .headbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.headbar a {
+    line-height: 66px;
+}
+
+#logo {
+    height: 44px;
+    position: absolute;
+    left: 11px;
+    top: 11px;
+    background-color: #1b91cf; /* Custom Blue */
+    border-radius: 10%;
+}
+
+#app-title {
+    margin-left: 44px;
+    color: #ffffff; /* Custom Blue */
+}
+
+.fab {
+    width: 44px;
+    height: 44px;
+    background-color: #1b91cf; /* Custom Blue */
+    border-radius: 50%;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3); /* Soft shadow */
+
+    font-size: 36px;
+    color: white;
+    text-align: center;
+    line-height: 44px;
+
+    position: absolute;
+    top: 44px;
+    right: 22px;
+
+    cursor: pointer;
+}
+
+#channel-list-area {
+    height: calc(100vh - 66px);
+    overflow-y: auto;
+}
+
+h2 {
+    color: #1b91cf; /* Custom Blue */
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin: 22px 22px 11px 11px;
+}
+
+.channel-list li {
+    box-sizing: border-box;
+    padding: 22px;
+    height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.channel-list li.selected {
+    background-color: #f0f0f0; /* Softer background color */
+    border-right: 3px solid #1b91cf; /* Custom Blue */
+}
+
+.channel-list li:hover {
+    background-color: #f0f0f0; /* Softer hover color */
+}
+
+.timestamp {
+    font-size: 12px;
+    color: #666666;
+}
+
+.channel-list i {
+    font-size: 20px;
+    color: #666666;
+}
+
+.channel-name {
+    font-size: 16px;
+    margin: 0px 22px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex: 1 1 auto;
+}
+
+/* message stuff goes here */
+
+#favorite-button {
+    cursor: pointer;
+}
+
+#chat-area {
+    box-sizing: border-box;
+    padding: 22px;
+    height: calc(100vh - 2 * 66px);
+    width: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    margin-bottom: 22px;
+    max-width: 75%;
+}
+
+.message a {
+    font-size: 33px;
+    color: #666666;
+}
+
+.message i {
+    font-size: 33px;
+    color: #666666;
+}
+
+.incoming-message .timestamp {
+    margin-left: 44px;
+}
+
+.outgoing-message .timestamp {
+    margin-right: 44px;
+}
+
+.outgoing-message {
+    align-self: flex-end;
+    text-align: right;
+}
+
+.message-wrapper {
+    display: flex;
+    align-items: flex-end;
+}
+
+.message-content {
+    padding: 11px;
+    margin: 0px 11px;
+    text-align: left;
+}
+
+.incoming-message .message-content {
+    border-radius: 20px 20px 20px 5px;
+    background-color: #f0f0f0; /* Softer background color */
+}
+
+.outgoing-message .message-content {
+    background-color: #1b91cf; /* Custom Blue */
+    border-radius: 20px 20px 5px 20px;
+    color: white;
+}
+
+.message-content h3 {
+    font-size: 14px;
+    color: #1b91cf; /* Custom Blue */
+    margin-bottom: 11px;
+}
+
+.message-content p {
+    font-size: 14px;
+}
+
+#input-area {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 66px;
+    position: absolute;
+    bottom: 0;
+    background-color: #f0f0f0; /* Softer background color */
+    padding: 0 22px;
+}
+
+#emoticon-button {
+    padding: 11px;
+    color: white;
+    background-color: #1b91cf; /* Custom Blue */
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#message-input {
+    flex-basis: 100%;
+    height: 44px;
+    margin: 0 22px;
+    padding: 0 11px;
+    border: none;
+    border-radius: 11px;
+    font-size: 12px;
+}
+
+#send-button {
+    color: #1b91cf; /* Custom Blue */
+    cursor: pointer;
+}
