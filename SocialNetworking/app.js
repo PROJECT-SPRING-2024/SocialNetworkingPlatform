@@ -58,6 +58,9 @@ app.get('/news', (req, res) => {
 app.get('/friends', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'friends.html'));
 });
+app.get('/chat', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'chat.html'));
+});
 
 
 /*
