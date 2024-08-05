@@ -8,7 +8,8 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const multer = require('multer');
-
+const messagesRoutes = require('./server/routes/messages');
+const usersRoutes = require('./server/routes/users');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -75,6 +76,9 @@ const commentsRoutes = require('./server/routes/comments');
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentsRoutes);
+app.use('/api/messages', messagesRoutes);
+app.use('/api/users', usersRoutes);
+
 
 app.post('/upload', multer().single('image'), (req, res) => {
   res.json({ file: req.file });

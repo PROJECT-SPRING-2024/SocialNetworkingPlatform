@@ -2,141 +2,131 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Chat</title>
-
-    <link rel="stylesheet" type="text/css" href="css/style2.css">
-
-
-
-
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Chat</title>
+  <link rel="stylesheet" type="text/css" href="css/style2.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body onload="init()">
-    <section id="channel-area">
-       
+  <section id="user-list-area">
+    <h2>Users</h2>
+    <ul id="user-list" class="user-list"></ul>
+  </section>
 
-      
-        <div id="channel-list-area">
-            <h2>Favorites</h2>
-            <ul class="channel-list">
-                <li id="channel1" onclick="switchChannel(channel1)" >
-                    <i class="material-icons">group</i>
-                    <span class="channel-name">Public 1</span>
-                    <span class="timestamp">11:51</span>
-                </li>
-                <li id="channel2" onclick="switchChannel(channel2)">
-                    <i class="material-icons">group</i>
-                    <span class="channel-name">Public 2</span>
-                    <span class="timestamp">10:51</span>
-                </li>
-            </ul>
+  <section id="message-area" style="display:none;">
+    <div class="headbar">
+      <h1 id="receiverName"></h1>
+    </div>
+    <div id="chat-area"></div>
+    <div id="input-area">
+      <i class="material-icons" id="emoticon-button">insert_emoticon</i>
+      <input type="text" id="message-input" name="message-input" placeholder="message" required>
+      <a class="material-icons button" id="send-button" onclick="sendMessage()">send</a>
+    </div>
+  </section>
 
-           
-        </div>
-    </section>
+  <script>
+    document.addEventListener("DOMContentLoaded", init);
 
-    <section id="message-area">
-        <div class="headbar">
-            <h1 id="channelName">Public 1</h1>
-            
-        </div>
-        <div id="chat-area">
-            <div class="message incoming-message">
-                <div class="message-wrapper">
-                    <i class="material-icons">account_circle</i>
-                    <div class="message-content">
-                        <h3>Jessie Koch</h3>
-                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repellat eveniet porro officia, nesciunt aut delectus incidunt possimus illum placeat repudiandae reiciendis corporis ab. Iste vel ducimus blanditiis, tempora adipisci doloribus.</p>
-                    </div>
-                </div>
-                <span class="timestamp">11:45</span>
-            </div>
-            <div class="message outgoing-message">
-                <div class="message-wrapper">
-                    <div class="message-content">
-                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repellat eveniet porro officia, nesciunt aut delectus incidunt possimus illum placeat repudiandae reiciendis corporis ab. Iste vel ducimus blanditiis, tempora adipisci doloribus.</p>
-                    </div>
-                    <i class="material-icons">account_circle</i>
-                </div>
-                <span class="timestamp">11:45</span>
-            </div>
-            <div class="message outgoing-message">
-                <div class="message-wrapper">
-                    <div class="message-content">
-                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repellat eveniet porro officia, nesciunt aut delectus incidunt possimus illum placeat repudiandae reiciendis corporis ab. Iste vel ducimus blanditiis, tempora adipisci doloribus.</p>
-                    </div>
-                    <i class="material-icons">account_circle</i>
-                </div>
-                <span class="timestamp">11:45</span>
-            </div>
-            <div class="message outgoing-message">
-                <div class="message-wrapper">
-                    <div class="message-content">
-                        <p>Lorem ipsum.</p>
-                    </div>
-                    <i class="material-icons">account_circle</i>
-                </div>
-                <span class="timestamp">11:45</span>
-            </div>
-            <div class="message incoming-message">
-                <div class="message-wrapper">
-                    <i class="material-icons">account_circle</i>
-                    <div class="message-content">
-                        <h3>Jessie Koch</h3>
-                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repellat eveniet porro officia, nesciunt aut delectus incidunt possimus illum placeat repudiandae reiciendis corporis ab. Iste vel ducimus blanditiis, tempora adipisci doloribus.</p>
-                    </div>
-                </div>
-                <span class="timestamp">11:45</span>
-            </div>
-            <div class="message incoming-message">
-                <div class="message-wrapper">
-                    <i class="material-icons">account_circle</i>
-                    <div class="message-content">
-                        <h3>Jessie Koch</h3>
-                        <p>Lorem ipsum Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consectetur dolor voluptas debitis deleniti iure consequatur saepe! Sed repellendus accusantium neque nemo doloremque ipsa deleniti. Cumque rem repudiandae accusamus dolores adipisci!.</p>
-                    </div>
-                </div>
-                <span class="timestamp">11:45</span>
-            </div>
-            <div class="message incoming-message">
-                <div class="message-wrapper">
-                    <i class="material-icons">account_circle</i>
-                    <div class="message-content">
-                        <h3>Jessie Koch</h3>
-                        <p>Lorem ipsum 
-                        </p>
-                    </div>
-                </div>
-                <span class="timestamp">11:45</span>
-            </div>
-            <div class="message outgoing-message">
-                    <div class="message-wrapper">
-                        <div class="message-content">
-                            <p>Lorem ipsum.</p>
-                        </div>
-                        <i class="material-icons">account_circle</i>
-                    </div>
-                    <div class="timestamp">11:45</div>
-            </div>
-        </div>
-        <div id="input-area">
-            <i class="material-icons" id="emoticon-button">insert_emoticon</i>
-            <input type="text" id="message-input" name="message-input" placeholder="message" required>
-            <a class="material-icons button" id="send-button" onclick="sendMessage()">send</a>
-        </div>        
-    </section>
+    let currentUser = null;
+    let currentReceiver = null;
 
+    function init() {
+      fetchUsers();
+    }
 
+    function fetchUsers() {
+      fetch('/api/users', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        const userList = document.getElementById('user-list');
+        userList.innerHTML = '';
+        data.forEach(user => {
+          const li = document.createElement('li');
+          li.textContent = user.name;
+          li.onclick = () => selectUser(user);
+          userList.appendChild(li);
+        });
+      })
+      .catch(error => console.error('Error fetching users:', error));
+    }
 
-    <script type="text/javascript" src="js/messages.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
-    <script type="text/javascript" src="js/channels.js"></script>
+    function selectUser(user) {
+      currentReceiver = user;
+      document.getElementById('receiverName').textContent = user.name;
+      document.getElementById('user-list-area').style.display = 'none';
+      document.getElementById('message-area').style.display = 'block';
+      fetchMessages(user.id);
+    }
 
+    function fetchMessages(userId) {
+      fetch(`/api/messages/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        const chatArea = document.getElementById('chat-area');
+        chatArea.innerHTML = '';
+        data.forEach(message => {
+          const messageDiv = document.createElement('div');
+          messageDiv.classList.add('message');
+          if (message.sender_id === currentUser.id) {
+            messageDiv.classList.add('outgoing-message');
+          } else {
+            messageDiv.classList.add('incoming-message');
+          }
+          messageDiv.innerHTML = `
+            <div class="message-wrapper">
+              <div class="message-content">
+                <p>${message.content}</p>
+              </div>
+            </div>
+            <span class="timestamp">${new Date(message.created_at).toLocaleTimeString()}</span>
+          `;
+          chatArea.appendChild(messageDiv);
+        });
+      })
+      .catch(error => console.error('Error fetching messages:', error));
+    }
+
+    function sendMessage() {
+      const messageInput = document.getElementById('message-input');
+      const content = messageInput.value;
+      if (!content) return;
+
+      fetch('/api/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          receiver_id: currentReceiver.id,
+          content: content
+        })
+      })
+      .then(response => response.json())
+      .then(message => {
+        messageInput.value = '';
+        fetchMessages(currentReceiver.id);
+      })
+      .catch(error => console.error('Error sending message:', error));
+    }
+  </script>
 </body>
+
 </html>

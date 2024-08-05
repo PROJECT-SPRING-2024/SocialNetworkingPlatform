@@ -63,7 +63,20 @@ router.put('/:commentId', authenticateToken, async (req, res) => {
   }
 });
 
+// Get all users except the logged-in user
+router.get('/', authenticateToken, async (req, res) => {
+  const currentUserId = req.user.userId;
 
+  try {
+    const result = await pool.query(
+      'SELECT id, name, email, profile_image FROM users WHERE id != $1',
+      [currentUserId]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 // Route to delete a comment by ID
 router.delete('/:commentId', authenticateToken, async (req, res) => {
   const { commentId } = req.params;
