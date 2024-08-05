@@ -9,6 +9,93 @@
   <link rel="stylesheet" type="text/css" href="css/style2.css">
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+    }
+
+    #user-list-area {
+      width: 30%;
+      border-right: 1px solid #ddd;
+      overflow-y: auto;
+    }
+
+    #user-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .user-list li {
+      padding: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .user-list li:hover {
+      background-color: #f0f0f0;
+    }
+
+    .user-list .selected {
+      background-color: #007bff;
+      color: white;
+    }
+
+    #message-area {
+      width: 70%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .headbar {
+      background-color: #007bff;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    #chat-area {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .message {
+      margin-bottom: 20px;
+    }
+
+    .outgoing-message {
+      text-align: right;
+    }
+
+    .incoming-message {
+      text-align: left;
+    }
+
+    #input-area {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      border-top: 1px solid #ddd;
+    }
+
+    #message-input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    #send-button {
+      margin-left: 10px;
+      cursor: pointer;
+      color: #007bff;
+    }
+  </style>
 </head>
 
 <body onload="init()">
@@ -17,14 +104,14 @@
     <ul id="user-list" class="user-list"></ul>
   </section>
 
-  <section id="message-area" style="display:none;">
+  <section id="message-area">
     <div class="headbar">
-      <h1 id="receiverName"></h1>
+      <h1 id="receiverName">Select a user to start a conversation</h1>
     </div>
     <div id="chat-area"></div>
     <div id="input-area">
       <i class="material-icons" id="emoticon-button">insert_emoticon</i>
-      <input type="text" id="message-input" name="message-input" placeholder="message" required>
+      <input type="text" id="message-input" name="message-input" placeholder="Type a message..." required>
       <a class="material-icons button" id="send-button" onclick="sendMessage()">send</a>
     </div>
   </section>
@@ -32,7 +119,7 @@
   <script>
     document.addEventListener("DOMContentLoaded", init);
 
-    let currentUser = null;
+    let currentUser = { id: 1 }; // Example user ID for testing
     let currentReceiver = null;
 
     function init() {
@@ -47,26 +134,36 @@
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
       .then(data => {
+        console.log('Fetched users:', data); // Debugging
+        if (!Array.isArray(data)) {
+          throw new Error('Expected an array of users');
+        }
         const userList = document.getElementById('user-list');
         userList.innerHTML = '';
         data.forEach(user => {
           const li = document.createElement('li');
           li.textContent = user.name;
-          li.onclick = () => selectUser(user);
+          li.onclick = () => selectUser(user, li);
           userList.appendChild(li);
         });
       })
       .catch(error => console.error('Error fetching users:', error));
     }
 
-    function selectUser(user) {
+    function selectUser(user, element) {
       currentReceiver = user;
       document.getElementById('receiverName').textContent = user.name;
-      document.getElementById('user-list-area').style.display = 'none';
-      document.getElementById('message-area').style.display = 'block';
       fetchMessages(user.id);
+
+      document.querySelectorAll('#user-list li').forEach(li => li.classList.remove('selected'));
+      element.classList.add('selected');
     }
 
     function fetchMessages(userId) {
@@ -79,6 +176,7 @@
       })
       .then(response => response.json())
       .then(data => {
+        console.log('Fetched messages:', data); // Debugging
         const chatArea = document.getElementById('chat-area');
         chatArea.innerHTML = '';
         data.forEach(message => {
@@ -99,6 +197,7 @@
           `;
           chatArea.appendChild(messageDiv);
         });
+        chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
       })
       .catch(error => console.error('Error fetching messages:', error));
     }
@@ -106,7 +205,7 @@
     function sendMessage() {
       const messageInput = document.getElementById('message-input');
       const content = messageInput.value;
-      if (!content) return;
+      if (!content || !currentReceiver) return;
 
       fetch('/api/messages', {
         method: 'POST',
@@ -122,9 +221,30 @@
       .then(response => response.json())
       .then(message => {
         messageInput.value = '';
-        fetchMessages(currentReceiver.id);
+        appendMessage(message);
       })
       .catch(error => console.error('Error sending message:', error));
+    }
+
+    function appendMessage(message) {
+      const chatArea = document.getElementById('chat-area');
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message');
+      if (message.sender_id === currentUser.id) {
+        messageDiv.classList.add('outgoing-message');
+      } else {
+        messageDiv.classList.add('incoming-message');
+      }
+      messageDiv.innerHTML = `
+        <div class="message-wrapper">
+          <div class="message-content">
+            <p>${message.content}</p>
+          </div>
+        </div>
+        <span class="timestamp">${new Date(message.created_at).toLocaleTimeString()}</span>
+      `;
+      chatArea.appendChild(messageDiv);
+      chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
     }
   </script>
 </body>
