@@ -706,7 +706,8 @@ nav {
     flex-wrap: wrap;
   }
   .search-box {
-    display: none;
+    position: relative;
+    width: 60%;
   }
   .logo {
     width: 95px;

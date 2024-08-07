@@ -489,6 +489,7 @@
             required
           ></textarea>
           <button type="submit" id="commentButton">Post Comment</button>
+          <button type="submit" id="commentUpdateButton">Update Comment</button>
           <div id="commentsContainer"></div>
           
         
@@ -732,8 +733,8 @@ const fetchComments = async (postId) => {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     });
-    console.log("err comment");
-    console.log(postId);
+   
+   
     if (!response.ok) {
       //window.location.href = `${window.location.origin}/login`;
       throw new Error('Network response was not ok');
@@ -764,14 +765,15 @@ const fetchComments = async (postId) => {
           <div class="user-profile">
             <img src="${profilePic}" alt="User Picture">
             <div>
-              <p>${comment.name}</p>
+             <p id="comment_id" style="display: none;">${comment.id}</p>
+              <p >${comment.name}</p>
               <span>${new Date(comment.date).toLocaleString()}</span>
             </div>
           </div>
           ${authorActions}
         </div>
         <p class="post-text">
-          <span>${comment.commentdetails}</span>
+          <span id="comment_view_txt">${comment.commentdetails}</span>
         </p>
       `;
 
@@ -780,15 +782,28 @@ const fetchComments = async (postId) => {
 
       document.querySelectorAll('#optionsModalComment').forEach(icon => {
       icon.addEventListener('click', (event) => {
-        const commentId = event.target.getAttribute('data-comment-id');
-        const postId = event.target.getAttribute('data-post-id');
+        const commentBox = event.target.closest('.comment-box');
+    const commentIdElement = commentBox.querySelector('#comment_id');
+    const commentTextElement = commentBox.querySelector('#comment_view_txt');
+
+    if (commentIdElement && commentTextElement) {
+      const commentId = commentIdElement.textContent;
+      const commentText = commentTextElement.textContent;
+
+      console.log('Comment ID:', commentId);
+      console.log('Comment Text:', commentText);
+    }
+        const commentForm = document.getElementById('commentForm');
+
+        // Access the data-post-id attribute value
+        const postId = commentForm.dataset.postId;
         const optionsModal1 = document.getElementById("optionsModal1");
         const optionsModalClose = document.getElementById("optionsModalClose1");
         const optionsModalEditButton1 = document.getElementById("optionsModalEditButton1");
         const optionsModalDeleteButton1 = document.getElementById("optionsModalDeleteButton1");
 
         optionsModal1.style.display = "block";
-        console.log('Ellipsis icon clicked for comment:', commentId, 'post:', postId);
+        //console.log('Ellipsis icon clicked for comment:', commentId, 'post:', postId);
 
         // Handle the close button click
         optionsModalClose.addEventListener('click', () => {
@@ -797,52 +812,32 @@ const fetchComments = async (postId) => {
 
         // Handle the "Edit" button click
         optionsModalEditButton1.addEventListener('click', () => {
-  console.log('Edit button clicked for comment:', commentId, 'post:', postId);
-  const optionsModal1 = document.getElementById("optionsModal1");
-  optionsModal1.style.display = "none";
-  // Open the update modal
-  const updateModal = document.getElementById("updateCommentModal");
-  updateModal.style.display = "block";
+          optionsModal1.style.display = "none";
+     
+          // Set the text area with the existing comment text
+        const commentIdElement = commentBox.querySelector('#comment_id'); // Set the commentId in form's dataset
+        const comment_view_txtEl = commentBox.querySelector('#comment_view_txt');
+        const commentId = commentIdElement.textContent;
+        const commentT = comment_view_txtEl.textContent;
+        const commentTextarea = document.getElementById('commentText');
+        commentTextarea.value = commentT;
+        commentTextarea.focus(); // Set focus on the textarea
+          console.log('Edit button clicked for comment:', commentId, 'post:', postId);
+          commentForm.dataset.commentId = commentId; 
+          optionsModal1.style.display = "none";
+          document.getElementById('commentModal').style.display = "block"; // Show the edit modal
+   
 
-  // Populate the modal with current comment details
-  document.getElementById('updateCommentTitle').value = event.target.closest('.comment-box').querySelector('.post-text span').innerText;
+ 
 
-  // Handle the update form submission
-  document.getElementById('updatePostForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const updatedComment = document.getElementById('updateCommentTitle').value;
 
-    try {
-      const response = await fetch(`/api/comments/${commentId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        },
-        body: JSON.stringify({ commentdetails: updatedComment })
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const updatedCommentData = await response.json();
-      console.log('Comment updated:', updatedCommentData);
-
-      // Update the comment in the UI
-      event.target.closest('.comment-box').querySelector('.post-text span').innerText = updatedComment;
-
-      updateModal.style.display = "none";
-    } catch (error) {
-      console.error('Error updating comment:', error);
-    }
-  };
-
-  optionsModal1.style.display = "none";
+ 
 });
 
         // Handle the "Delete" button click
         optionsModalDeleteButton1.addEventListener('click', async () => {
+          const commentIdElement = commentBox.querySelector('#comment_id'); // Set the commentId in form's dataset
+          const commentId = commentIdElement.textContent;
   console.log('Delete button clicked for comment:', commentId, 'post:', postId);
 
   try {
@@ -899,6 +894,51 @@ const fetchComments = async (postId) => {
           }
         };
 
+        document.getElementById('commentUpdateButton').addEventListener('click', async (event) => {
+  event.preventDefault();
+
+  const commentId = commentForm.dataset.commentId;
+  const postId = commentForm.dataset.postId;
+  const commentText = document.getElementById('commentText').value;
+
+  if (!commentText || !commentId || !postId) {
+    console.error('Required elements or values are missing');
+    console.error('Comment ID:', commentId);
+    console.error('Post ID:', postId);
+    console.error('Comment Text:', commentText);
+    return;
+  }
+
+  const data = {
+    postId: postId,
+    commentdetails: commentText
+  };
+
+  try {
+    const response = await fetch(`/api/comments/${commentId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const responseData = await response.json();
+    console.log(responseData);
+    document.getElementById('commentText').value = ""; // Clear the text area
+    fetchComments(postId); // Refresh the comments
+
+    document.getElementById('commentModal').style.display = 'none'; // Close the edit modal
+  } catch (error) {
+    console.error("Error:", error);
+  }
+});
+
         commentForm.onsubmit = async function (event) {
   event.preventDefault();
   const currentPostId = commentForm.dataset.postId;
@@ -942,8 +982,10 @@ const fetchComments = async (postId) => {
     console.error("Error:", error);
   }
 };
-fetchUserInfo();
-fetchPosts();
+
+
+        fetchUserInfo();
+        fetchPosts();
       });
 
       const modal = document.getElementById("myModal");
@@ -993,7 +1035,7 @@ const updatePostButton = document.getElementById("updatePostButton");
       closeModal();
     }
   });
-
+ 
   // Add event listeners to buttons inside the modal
   optionsModalEditButton.addEventListener("click", async () => {
   console.log("Edit button clicked");
@@ -1012,7 +1054,7 @@ const updatePostButton = document.getElementById("updatePostButton");
 
     const updateImagePreview = document.getElementById('updateImagePreview');
     if (post.image) {
-      updateImagePreview.src = `/public${post.image}`; // Adjust the path as needed
+      updateImagePreview.src = `${post.image}`; // Adjust the path as needed
       updateImagePreview.style.display = 'block';
     } else {
       updateImagePreview.style.display = 'none';
@@ -1154,7 +1196,7 @@ optionsModalDeleteButton.addEventListener("click", () => {
             },
           });
           if (!response.ok) {
-      window.location.href = `${window.location.origin}/login`;
+            console.error("Error:", response);
       throw new Error('Network response was not ok');
     }
           const data = await response.json();

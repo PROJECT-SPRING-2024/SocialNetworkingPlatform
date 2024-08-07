@@ -1,23 +1,148 @@
 const express = require('express');
 const pool = require('../../db');
-const { authenticateToken } = require('../middleware/auth'); // Ensure this path is correct
+const { authenticateToken } = require('../middleware/auth');
 const multer = require('multer');
 const path = require('path');
-const { hashPassword, verifyPassword, generateToken } = require('../middleware/auth');
-
+const admin = require('firebase-admin');
+const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 
+// Initialize Firebase Admin SDK
+const serviceAccount = require('../../serviceAccountKey.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  storageBucket: 'social-19ed9.appspot.com'
+});
+
+const bucket = admin.storage().bucket();
+
 // Setup multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/images/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+// Create a post
+router.post('/', authenticateToken, upload.single('image'), async (req, res) => {
+  console.log('Request body:', req.body);
+  console.log('Uploaded file:', req.file);
+
+  const { title, description } = req.body;
+  const author = req.user ? req.user.id : null;
+
+  if (!author) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    let imageUrl = null;
+    if (req.file) {
+      const filename = `${uuidv4()}_${req.file.originalname}`;
+      const fileUpload = bucket.file(filename);
+
+      const blobStream = fileUpload.createWriteStream({
+        metadata: {
+          contentType: req.file.mimetype
+        }
+      });
+
+      blobStream.on('error', (error) => {
+        console.error(error);
+        return res.status(500).send('Something went wrong!');
+      });
+
+      blobStream.on('finish', async () => {
+        imageUrl = `https://firebasestorage.googleapis.com/v0/b/social-19ed9.appspot.com/o/${fileUpload.name}?alt=media&token=8d098005-90f0-408b-8306-593dcfb1e63c`;
+
+        const result = await pool.query(
+          'INSERT INTO posts (title, description, author, image, date) VALUES ($1, $2, $3, $4, NOW()) RETURNING *',
+          [title, description, author, imageUrl]
+        );
+
+        res.status(201).json(result.rows[0]);
+      });
+
+      blobStream.end(req.file.buffer);
+    } else {
+      const result = await pool.query(
+        'INSERT INTO posts (title, description, author, image, date) VALUES ($1, $2, $3, $4, NOW()) RETURNING *',
+        [title, description, author, imageUrl]
+      );
+
+      res.status(201).json(result.rows[0]);
+    }
+  } catch (err) {
+    console.error('Error inserting post into database:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
-const upload = multer({ storage: storage });
+// Update a post by ID
+router.put('/:id', authenticateToken, upload.single('image'), async (req, res) => {
+  console.log('Request body:', req.body);
+  console.log('Uploaded file:', req.file);
+
+  const postId = req.params.id;
+  const userId = req.user.id;
+  const { title, description } = req.body;
+
+  try {
+    let imageUrl = null;
+    if (req.file) {
+      const filename = `${uuidv4()}_${req.file.originalname}`;
+      const fileUpload = bucket.file(filename);
+
+      const blobStream = fileUpload.createWriteStream({
+        metadata: {
+          contentType: req.file.mimetype
+        }
+      });
+
+      blobStream.on('error', (error) => {
+        console.error(error);
+        return res.status(500).send('Something went wrong!');
+      });
+
+      blobStream.on('finish', async () => {
+
+        imageUrl = `https://firebasestorage.googleapis.com/v0/b/social-19ed9.appspot.com/o/${fileUpload.name}?alt=media&token=8d098005-90f0-408b-8306-593dcfb1e63c`;
+
+        let query = 'UPDATE posts SET title = $1, description = $2';
+        let params = [title, description, postId, userId];
+
+        if (imageUrl) {
+          query += ', image = $3 WHERE id = $4 AND author = $5 RETURNING *';
+          params = [title, description, imageUrl, postId, userId];
+        } else {
+          query += ' WHERE id = $3 AND author = $4 RETURNING *';
+        }
+
+        const result = await pool.query(query, params);
+
+        if (result.rowCount === 0) {
+          return res.status(404).json({ error: 'Post not found or you are not authorized to update this post' });
+        }
+
+        res.json(result.rows[0]);
+      });
+
+      blobStream.end(req.file.buffer);
+    } else {
+      let query = 'UPDATE posts SET title = $1, description = $2 WHERE id = $3 AND author = $4 RETURNING *';
+      let params = [title, description, postId, userId];
+
+      const result = await pool.query(query, params);
+
+      if (result.rowCount === 0) {
+        return res.status(404).json({ error: 'Post not found or you are not authorized to update this post' });
+      }
+
+      res.json(result.rows[0]);
+    }
+  } catch (err) {
+    console.error('Error updating post:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Get all posts
 /*
@@ -157,38 +282,6 @@ ORDER BY
 
 
 
-// Update a post by ID
-router.put('/:id', authenticateToken, upload.single('image'), async (req, res) => {
-  const postId = req.params.id;
-  const userId = req.user.id; // Assuming authenticateToken middleware sets req.user
-  const { title, description } = req.body;
-  const image = req.file ? `/images/${req.file.filename}` : null;
-
-
-
-  try {
-    let query = 'UPDATE posts SET title = $1, description = $2';
-    let params = [title, description, postId, userId];
-
-    if (image) {
-      query += ', image = $3 WHERE id = $4 AND author = $5 RETURNING *';
-      params = [title, description, image, postId, userId];
-    } else {
-      query += ' WHERE id = $3 AND author = $4 RETURNING *';
-    }
-
-    const result = await pool.query(query, params);
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Post not found or you are not authorized to update this post' });
-    }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('Error updating post:', err);
-    res.status(500).json({ error: err.message });
-  }
-});
 router.get('/users', authenticateToken, async (req, res) => {
   try {
     const query = 'SELECT name, email, profile_image FROM users WHERE id = $1';
@@ -331,26 +424,6 @@ router.delete('/likes', authenticateToken, async (req, res) => {
 
 
 
-// Create a post
-router.post('/', authenticateToken, upload.single('image'), async (req, res) => {
-  const { title, description } = req.body;
-  const author = req.user ? req.user.id : null; // Corrected to use req.user.id
-  const imagePath = req.file ? `/images/${req.file.filename}` : null;
-
-  if (!author) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  try {
-    const result = await pool.query(
-      'INSERT INTO posts (title, description, author, image, date) VALUES ($1, $2, $3, $4, NOW()) RETURNING *',
-      [title, description, author, imagePath]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 // Edit a post
 router.put('/:id', authenticateToken, upload.single('image'), async (req, res) => {
