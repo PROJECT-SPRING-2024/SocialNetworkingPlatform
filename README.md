@@ -114,4 +114,5 @@ Editing comment Logged user can edit own comments
 Search/Filtering User can search/filter displayed posts. 
 
 - **Project video**
+  
 https://github.com/user-attachments/assets/96946815-6e83-4c38-8e21-4bf299aa7459
